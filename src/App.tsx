@@ -1148,7 +1148,7 @@ export default function App() {
                       </div>
                       <button 
                         onClick={(e) => { e.stopPropagation(); setProjectToDelete({ id: proj.id, name: proj.name }); }}
-                        className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                        className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
                         title="刪除專案"
                       >
                         <Trash2 size={18} />
@@ -1409,7 +1409,7 @@ export default function App() {
                       <div key={segment.id} className="bg-slate-50/80 p-4 rounded-xl border border-slate-200 space-y-3 relative group">
                         <div className="flex items-center justify-between">
                           <input type="text" value={segment.name ?? ''} disabled={editingSegmentId !== segment.id} onChange={(e) => updateSegment(segment.id, 'name', e.target.value)} className="text-sm font-bold bg-transparent border-b-2 border-transparent focus:border-blue-500 outline-none px-1 py-0.5 w-32 disabled:border-transparent text-slate-800" placeholder="區塊名稱" />
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center gap-1 transition-opacity">
                             <button onClick={() => setEditingSegmentId(editingSegmentId === segment.id ? null : segment.id)} className={`p-1.5 rounded-md transition-colors ${editingSegmentId === segment.id ? 'bg-green-100 text-green-700' : 'bg-white border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-300'}`}>
                               {editingSegmentId === segment.id ? <Check size={14}/> : <Edit2 size={14}/>}
                             </button>
@@ -1458,7 +1458,7 @@ export default function App() {
                             <span>周長: <strong className="text-slate-700">{(opening.type === 'door' ? (opening.width + opening.height * 2) : (opening.width + opening.height) * 2).toFixed(2)}</strong> m</span>
                           </div>
                         </div>
-                        <button onClick={() => removeOpening(opening.id)} disabled={!isEditingOpenings} className="text-slate-400 hover:bg-red-50 hover:text-red-500 p-1.5 rounded-md disabled:opacity-0 transition-all"><Trash2 size={16} /></button>
+                        <button onClick={() => removeOpening(opening.id)} disabled={!isEditingOpenings} className="text-slate-400 hover:bg-red-50 hover:text-red-500 p-1.5 rounded-md transition-all"><Trash2 size={16} /></button>
                       </div>
                     ))}
                     {activeSpace.openings.length === 0 && <div className="col-span-full text-xs text-slate-400 text-center py-6 bg-slate-50 rounded-xl border border-slate-200 border-dashed">目前無扣除開口</div>}
@@ -1591,14 +1591,17 @@ export default function App() {
                                             {(item.price * item.quantity).toLocaleString()}
                                           </td>
                                           <td className="px-4 py-2.5 text-center">
-                                            <div className={`flex items-center justify-center gap-1 transition-opacity ${isEditing ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                                            <div className="flex items-center justify-center gap-1 transition-opacity">
                                               {isEditing ? (
                                                 <>
                                                   <button onClick={() => setEditingItemId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1 rounded transition-colors shadow-sm" title="儲存"><Check size={12} /></button>
                                                   <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
                                                 </>
                                               ) : (
-                                                <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded transition-colors" title="編輯"><Edit2 size={14} /></button>
+                                                <>
+                                                  <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded transition-colors" title="編輯"><Edit2 size={14} /></button>
+                                                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
+                                                </>
                                               )}
                                             </div>
                                           </td>
@@ -1663,14 +1666,17 @@ export default function App() {
                                 <td className="px-3 py-2.5 text-right">{isEditing ? <input type="number" step="0.1" value={item.quantity ?? 0} onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 text-right font-mono outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">{item.quantity}</span>}</td>
                                 <td className="px-4 py-2.5 text-right font-bold text-blue-600 font-mono text-[13px]">{(item.price * item.quantity).toLocaleString()}</td>
                                 <td className="px-4 py-2.5 text-center">
-                                  <div className={`flex items-center justify-center gap-1 transition-opacity ${isEditing ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                                  <div className="flex items-center justify-center gap-1 transition-opacity">
                                     {isEditing ? (
                                       <>
                                         <button onClick={() => setEditingItemId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1 rounded transition-colors shadow-sm" title="儲存"><Check size={12} /></button>
                                         <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
                                       </>
                                     ) : (
-                                      <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded transition-colors" title="編輯"><Edit2 size={14} /></button>
+                                      <>
+                                        <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded transition-colors" title="編輯"><Edit2 size={14} /></button>
+                                        <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
+                                      </>
                                     )}
                                   </div>
                                 </td>
@@ -1751,14 +1757,17 @@ export default function App() {
                                             {(item.price * item.quantity).toLocaleString()}
                                           </td>
                                           <td className="px-4 py-2.5 text-center">
-                                            <div className={`flex items-center justify-center gap-1 transition-opacity ${isEditing ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                                            <div className="flex items-center justify-center gap-1 transition-opacity">
                                               {isEditing ? (
                                                 <>
                                                   <button onClick={() => setEditingItemId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1 rounded transition-colors shadow-sm" title="儲存"><Check size={12} /></button>
                                                   <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
                                                 </>
                                               ) : (
-                                                <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded transition-colors" title="編輯"><Edit2 size={14} /></button>
+                                                <>
+                                                  <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded transition-colors" title="編輯"><Edit2 size={14} /></button>
+                                                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
+                                                </>
                                               )}
                                             </div>
                                           </td>
@@ -1989,13 +1998,11 @@ export default function App() {
                           <td className="px-3 py-3 text-center align-top pt-4">
                             <div className="flex items-center justify-center gap-1.5 mt-0.5">
                               {isEditing ? (
-                                <>
-                                  <button onClick={() => setEditingCoefficientId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1.5 rounded-lg transition-colors shadow-sm" title="儲存"><Check size={14} /></button>
-                                  <button onClick={() => { if(coefficientSets.length > 1) { setCoefficientSets(coefficientSets.filter(s => s.id !== set.id)); } else { setAlertMessage("至少需保留一組係數設定"); } }} className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors" title="刪除"><Trash2 size={14} /></button>
-                                </>
+                                <button onClick={() => setEditingCoefficientId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1.5 rounded-lg transition-colors shadow-sm" title="儲存"><Check size={14} /></button>
                               ) : (
                                 <button onClick={() => setEditingCoefficientId(set.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded-lg transition-colors" title="編輯"><Edit2 size={14} /></button>
                               )}
+                              <button onClick={() => { if(coefficientSets.length > 1) { setCoefficientSets(coefficientSets.filter(s => s.id !== set.id)); } else { setAlertMessage("至少需保留一組係數設定"); } }} className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-colors" title="刪除"><Trash2 size={14} /></button>
                             </div>
                           </td>
                         </tr>
@@ -2037,7 +2044,7 @@ export default function App() {
                           <h3 className="font-bold text-slate-800 text-lg flex items-center">
                             {label}
                             <span className="text-sm text-slate-400 font-normal ml-3 bg-white px-2 py-0.5 rounded-full border border-slate-200">{items.length} 項</span>
-                            {cat.startsWith('custom_') && <button onClick={(e) => { e.stopPropagation(); setCategoryToDelete({ id: cat, label }); }} className="ml-3 text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-md transition-all opacity-0 group-hover:opacity-100" title="刪除自訂類別"><Trash2 size={16} /></button>}
+                            {cat.startsWith('custom_') && <button onClick={(e) => { e.stopPropagation(); setCategoryToDelete({ id: cat, label }); }} className="ml-3 text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-md transition-all" title="刪除自訂類別"><Trash2 size={16} /></button>}
                           </h3>
                         </div>
                         <button onClick={(e) => { e.stopPropagation(); addDatabaseItem(cat as any); }} className="text-sm font-bold flex items-center gap-1.5 text-blue-600 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm hover:bg-blue-50 transition-colors"><Plus size={14} /> 新增項目</button>
