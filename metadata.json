@@ -1,0 +1,5 @@
+{
+  "name": "建築內裝估算工具",
+  "description": "提供建築室內裝修數量估算，包含地面與牆面面積計算、材料需求換算及自定義設備清單估價。",
+  "requestFramePermissions": []
+}

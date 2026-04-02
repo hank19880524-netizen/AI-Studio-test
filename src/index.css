@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --color-concrete-light: #f5f5f5;
+  --color-concrete-medium: #e0e0e0;
+  --color-concrete-dark: #4a4a4a;
+  --color-concrete-accent: #8e8e8e;
+  --color-concrete-border: #d1d1d1;
+  --color-concrete-ink: #1a1a1a;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-concrete-light text-concrete-ink font-sans antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  .concrete-card {
+    @apply bg-white/80 backdrop-blur-sm border border-concrete-border rounded-none shadow-sm transition-all duration-300;
+    position: relative;
+  }
+
+  .concrete-card::after {
+    content: "";
+    @apply absolute inset-0 pointer-events-none opacity-[0.03];
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+  }
+
+  .concrete-button {
+    @apply bg-concrete-dark text-white px-6 py-2 transition-all duration-300 hover:bg-concrete-ink active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .concrete-button-outline {
+    @apply border border-concrete-dark text-concrete-dark px-6 py-2 transition-all duration-300 hover:bg-concrete-dark hover:text-white active:scale-95;
+  }
+
+  .concrete-input {
+    @apply bg-transparent border-b border-concrete-border px-1 py-0.5 outline-none transition-all duration-300 focus:border-concrete-dark text-xs;
+  }
+
+  /* Custom scrollbar for concrete look */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-concrete-light;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-concrete-accent rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-concrete-dark;
+  }
+}
