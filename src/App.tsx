@@ -34,7 +34,10 @@ import {
   Calendar,
   User,
   Download,
-  Upload
+  Upload,
+  ArrowRight,
+  LogOut,
+  Lock
 } from 'lucide-react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { 
@@ -146,6 +149,10 @@ const DATABASE_ITEMS: Omit<EstimationItem, 'id' | 'quantity'>[] = [
   { name: '益膠泥', unit: '包', price: 450, category: 'material', remarks: '' },
   { name: '填縫劑', unit: '包', price: 350, category: 'material', remarks: '' },
   { name: '油漆', unit: '加侖', price: 1200, category: 'material', remarks: '' },
+  { name: '批土', unit: '包', price: 450, category: 'material', remarks: '' },
+  { name: '石膏', unit: '包', price: 300, category: 'material', remarks: '' },
+  { name: '矽利康', unit: '支', price: 120, category: 'material', remarks: '' },
+  { name: '玻璃纖維網', unit: '捲', price: 850, category: 'material', remarks: '' },
   // 防水類
   { name: '角防水塗料', unit: '坪', price: 800, category: 'waterproof', remarks: '' },
   { name: '隅抗裂網', unit: '公尺', price: 80, category: 'waterproof', remarks: '' },
@@ -158,17 +165,46 @@ const DATABASE_ITEMS: Omit<EstimationItem, 'id' | 'quantity'>[] = [
   { name: '馬賽克磚', size: '30x30', unit: '片', price: 100, category: 'tile', tileType: 'wall', remarks: '' },
   { name: '地磚', size: '60x60', unit: '片', price: 300, category: 'tile', tileType: 'floor', remarks: '' },
   { name: '壁磚', size: '30x60', unit: '片', price: 150, category: 'tile', tileType: 'wall', remarks: '' },
+  { name: '六角磚', size: '20x23', unit: '片', price: 85, category: 'tile', tileType: 'floor', remarks: '' },
+  { name: '地鐵磚', size: '10x20', unit: '片', price: 35, category: 'tile', tileType: 'wall', remarks: '' },
+  { name: '文化石', size: '6x20', unit: '箱', price: 1200, category: 'tile', tileType: 'wall', remarks: '' },
+  { name: '大理石紋磚', size: '60x120', unit: '片', price: 1200, category: 'tile', tileType: 'floor', remarks: '' },
+  { name: '止滑磚', size: '30x30', unit: '片', price: 95, category: 'tile', tileType: 'floor', remarks: '' },
+  { name: '玻璃磚', size: '19x19', unit: '個', price: 180, category: 'tile', tileType: 'wall', remarks: '' },
+  { name: '樓梯收邊條', unit: '支', price: 450, category: 'tile', remarks: '' },
   // 板材
   { name: '木心板', unit: '片', price: 1200, category: 'material', remarks: '' },
-  { name: '角材', unit: '支', price: 150, category: 'material', remarks: '' },
   { name: '石膏板', unit: '片', price: 300, category: 'material', remarks: '' },
   { name: '矽酸鈣板', unit: '片', price: 400, category: 'material', remarks: '' },
+  { name: '超耐磨地板', unit: '坪', price: 3500, category: 'material', remarks: '' },
+  { name: 'SPC 塑膠地板', unit: '坪', price: 2500, category: 'material', remarks: '' },
+  { name: '實木地板', unit: '坪', price: 8500, category: 'material', remarks: '' },
+  { name: '輕鋼架天花板', unit: '坪', price: 1800, category: 'material', remarks: '' },
   // 廚房設備
   { name: '抽油煙機', unit: '台', price: 8500, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
   { name: '瓦斯爐', unit: '台', price: 6500, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
   { name: '水槽', unit: '組', price: 4500, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
   { name: '洗碗機', unit: '台', price: 25000, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
   { name: '冰箱', unit: '台', price: 35000, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '嵌入式烤箱', unit: '台', price: 18000, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '微波爐', unit: '台', price: 4500, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '櫥下型淨水器', unit: '組', price: 12000, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '烘碗機', unit: '台', price: 7500, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '電磁爐', unit: '台', price: 3500, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '廚餘處理機', unit: '台', price: 15000, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '廚房龍頭', unit: '支', price: 3200, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '中島感應龍頭', unit: '支', price: 12000, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '人造石檯面', unit: 'cm', price: 80, category: 'kitchen_equipment', brand: '預設品牌', remarks: '每公分單價' },
+  { name: '石英石檯面', unit: 'cm', price: 150, category: 'kitchen_equipment', brand: '預設品牌', remarks: '每公分單價' },
+  { name: '不鏽鋼檯面', unit: 'cm', price: 120, category: 'kitchen_equipment', brand: '預設品牌', remarks: '每公分單價' },
+  { name: '烤漆玻璃', unit: '才', price: 250, category: 'kitchen_equipment', brand: '預設品牌', remarks: '防濺板使用' },
+  { name: '側拉籃', unit: '組', price: 2500, category: 'kitchen_equipment', brand: '預設品牌', remarks: '調味瓶收納' },
+  { name: '轉角小怪物', unit: '組', price: 12000, category: 'kitchen_equipment', brand: '預設品牌', remarks: '轉角收納五金' },
+  { name: '櫥櫃下照明', unit: '組', price: 1500, category: 'kitchen_equipment', brand: '預設品牌', remarks: 'LED 燈條' },
+  { name: '蒸烤爐', unit: '台', price: 32000, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '紅酒櫃', unit: '台', price: 28000, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
+  { name: '升降拉籃', unit: '組', price: 8500, category: 'kitchen_equipment', brand: '預設品牌', remarks: '高櫃使用' },
+  { name: '伸縮龍頭', unit: '支', price: 5500, category: 'kitchen_equipment', brand: '預設品牌', remarks: '' },
   // 衛浴設備
   { name: '馬桶', unit: '組', price: 12000, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
   { name: '免治馬桶', unit: '組', price: 25000, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
@@ -178,11 +214,44 @@ const DATABASE_ITEMS: Omit<EstimationItem, 'id' | 'quantity'>[] = [
   { name: '恆溫花灑', unit: '組', price: 8500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
   { name: '浴缸', unit: '組', price: 15000, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
   { name: '暖風機', unit: '台', price: 6000, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '化妝鏡', unit: '面', price: 2500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '鏡櫃', unit: '組', price: 6500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '浴櫃', unit: '組', price: 8500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '淋浴拉門', unit: '組', price: 12000, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '毛巾架', unit: '組', price: 1200, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '置物架', unit: '組', price: 1500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '抽風機', unit: '台', price: 1800, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '瞬熱式熱水器', unit: '台', price: 6500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '面盆龍頭', unit: '支', price: 2800, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '電熱毛巾架', unit: '組', price: 12000, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '安全扶手', unit: '支', price: 1500, category: 'bath_equipment', brand: '預設品牌', remarks: 'L型或一字型' },
+  { name: '防臭落水頭', unit: '個', price: 450, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '衛生紙架', unit: '組', price: 800, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '淋浴隔屏', unit: '組', price: 8500, category: 'bath_equipment', brand: '預設品牌', remarks: '單片玻璃' },
+  { name: '浴缸龍頭', unit: '組', price: 5500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '拖把池', unit: '組', price: 3500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '肥皂架', unit: '組', price: 600, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '牙刷架', unit: '組', price: 500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '小便斗', unit: '組', price: 8500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '感應式龍頭', unit: '支', price: 6500, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '落地式浴櫃', unit: '組', price: 15000, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
+  { name: '壁掛式浴櫃', unit: '組', price: 12000, category: 'bath_equipment', brand: '預設品牌', remarks: '' },
   // 一般設備
   { name: '冷氣主機', unit: '台', price: 35000, category: 'equipment', brand: '預設品牌', remarks: '' },
   { name: '冷氣室內機', unit: '台', price: 15000, category: 'equipment', brand: '預設品牌', remarks: '' },
   { name: '除濕機', unit: '台', price: 12000, category: 'equipment', brand: '預設品牌', remarks: '' },
   { name: '空氣清淨機', unit: '台', price: 18000, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '吊扇', unit: '台', price: 6500, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '電視', unit: '台', price: 25000, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '音響系統', unit: '套', price: 45000, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '投影機', unit: '台', price: 35000, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '投影幕', unit: '組', price: 8500, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '監視器', unit: '支', price: 3500, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '智慧門鎖', unit: '組', price: 15000, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '視訊對講機', unit: '組', price: 12000, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '全熱交換器', unit: '台', price: 65000, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '掃地機器人', unit: '台', price: 18000, category: 'equipment', brand: '預設品牌', remarks: '' },
+  { name: '飲水機', unit: '台', price: 15000, category: 'equipment', brand: '預設品牌', remarks: '' },
   // 廢棄物
   { name: '建築廢棄物清運', unit: '車', price: 4500, category: 'waste', remarks: '' },
   { name: '廢木材清運', unit: '車', price: 3500, category: 'waste', remarks: '' },
@@ -235,6 +304,9 @@ const DEFAULT_ITEMS_BY_TYPE: Record<SpaceType, EstimationItem[]> = {
     { id: 'b1', name: '馬桶', unit: '組', price: 12000, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
     { id: 'b2', name: '面盆', unit: '組', price: 5500, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
     { id: 'b3', name: '花灑龍頭', unit: '組', price: 4500, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
+    { id: 'b4', name: '化妝鏡', unit: '面', price: 2500, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
+    { id: 'b5', name: '毛巾架', unit: '組', price: 1200, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
+    { id: 'b6', name: '置物架', unit: '組', price: 1500, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
     { id: 't1', name: '地磚', size: '30x30', unit: '片', price: 80, quantity: 0, category: 'tile', tileType: 'floor' },
     { id: 't2', name: '壁磚', size: '30x60', unit: '片', price: 150, quantity: 0, category: 'tile', tileType: 'wall' },
     { id: 'w1', name: '彈性水泥', unit: '坪', price: 1200, quantity: 1, category: 'waterproof' },
@@ -244,6 +316,9 @@ const DEFAULT_ITEMS_BY_TYPE: Record<SpaceType, EstimationItem[]> = {
     { id: 'b2', name: '雙面盆', unit: '組', price: 12000, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
     { id: 'b3', name: '恆溫花灑', unit: '組', price: 8500, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
     { id: 'b4', name: '暖風機', unit: '台', price: 6000, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
+    { id: 'b5', name: '鏡櫃', unit: '組', price: 6500, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
+    { id: 'b6', name: '浴櫃', unit: '組', price: 8500, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
+    { id: 'b7', name: '淋浴拉門', unit: '組', price: 12000, quantity: 1, category: 'bath_equipment', brand: '預設品牌' },
     { id: 't1', name: '地磚', size: '30x30', unit: '片', price: 80, quantity: 0, category: 'tile', tileType: 'floor' },
     { id: 't2', name: '壁磚', size: '30x60', unit: '片', price: 150, quantity: 0, category: 'tile', tileType: 'wall' },
     { id: 'w1', name: '彈性水泥', unit: '坪', price: 1200, quantity: 1, category: 'waterproof' },
@@ -252,6 +327,9 @@ const DEFAULT_ITEMS_BY_TYPE: Record<SpaceType, EstimationItem[]> = {
     { id: 'k1', name: '抽油煙機', unit: '台', price: 8500, quantity: 1, category: 'kitchen_equipment', brand: '預設品牌' },
     { id: 'k2', name: '瓦斯爐', unit: '台', price: 6500, quantity: 1, category: 'kitchen_equipment', brand: '預設品牌' },
     { id: 'k3', name: '水槽', unit: '組', price: 4500, quantity: 1, category: 'kitchen_equipment', brand: '預設品牌' },
+    { id: 'k4', name: '廚房龍頭', unit: '支', price: 3200, quantity: 1, category: 'kitchen_equipment', brand: '預設品牌' },
+    { id: 'k5', name: '洗碗機', unit: '台', price: 25000, quantity: 1, category: 'kitchen_equipment', brand: '預設品牌' },
+    { id: 'k6', name: '烤漆玻璃', unit: '才', price: 250, quantity: 0, category: 'kitchen_equipment', brand: '預設品牌' },
     { id: 't1', name: '地磚', size: '60x60', unit: '片', price: 300, quantity: 0, category: 'tile', tileType: 'floor' },
     { id: 't2', name: '壁磚', size: '30x60', unit: '片', price: 150, quantity: 0, category: 'tile', tileType: 'wall' },
   ],
@@ -337,6 +415,34 @@ export default function App() {
   });
   const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
   
+  // --- Authentication State ---
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem('estimation_auth') === 'true';
+  });
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [loginUsername, setLoginUsername] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // 預設管理員帳號密碼
+    if (loginUsername === 'admin' && loginPassword === 'admin123') {
+      setIsAuthenticated(true);
+      localStorage.setItem('estimation_auth', 'true');
+      setLoginError('');
+    } else {
+      setLoginError('帳號或密碼錯誤，請重新輸入。');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('estimation_auth');
+    setAppState('home');
+    setShowLogoutConfirm(false);
+  };
+  
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [newProjName, setNewProjName] = useState('');
   const [newProjClient, setNewProjClient] = useState('');
@@ -371,7 +477,7 @@ export default function App() {
   const [sortBy, setSortBy] = useState<'name' | 'price' | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const [editingSegmentId, setEditingSegmentId] = useState<string | null>(null);
+  const [isEditingSegments, setIsEditingSegments] = useState(false);
   const [isEditingOpenings, setIsEditingOpenings] = useState(false);
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -385,6 +491,7 @@ export default function App() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [spaceToDelete, setSpaceToDelete] = useState<{id: string, name: string} | null>(null);
   const [dbSearchTerm, setDbSearchTerm] = useState(''); // 新增：資料庫搜尋關鍵字
+  const [selectedDbItems, setSelectedDbItems] = useState<string[]>([]); // 新增：已勾選的資料庫項目 ID
   const [showUnitConverter, setShowUnitConverter] = useState(false); // 新增：換算工具顯示開關
   const [activeConverterTab, setActiveConverterTab] = useState<'area' | 'length' | 'volume'>('area'); // 新增：換算工具當前分頁
 
@@ -400,18 +507,18 @@ export default function App() {
     }
   }, [spaces, coefficientSets, databaseItems, quoteDetails, categories, globalCementWeight, globalPaintCoats]);
 
-  const handleExportBackup = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projectsList));
+  const handleExportProject = (project: Project) => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(project));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `估算系統備份_${new Date().toISOString().slice(0, 10)}.json`);
+    downloadAnchorNode.setAttribute("download", `專案匯出_${project.name}_${new Date().toISOString().slice(0, 10)}.json`);
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-    setAlertMessage('備份檔已成功匯出！');
+    setAlertMessage(`專案「${project.name}」已成功匯出！`);
   };
 
-  const handleImportBackup = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImportProject = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -419,17 +526,25 @@ export default function App() {
     reader.onload = (e) => {
       try {
         const content = e.target?.result as string;
-        const importedProjects = JSON.parse(content);
+        const importedData = JSON.parse(content);
         
-        if (!Array.isArray(importedProjects)) {
+        let newProjects: Project[] = [];
+        
+        if (Array.isArray(importedData)) {
+          // 批次匯入備份
+          newProjects = importedData.map(p => ({
+            ...p,
+            id: `proj_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          }));
+        } else if (importedData && typeof importedData === 'object' && importedData.id) {
+          // 單一專案匯入
+          newProjects = [{
+            ...importedData,
+            id: `proj_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          }];
+        } else {
           throw new Error("格式錯誤");
         }
-
-        // 重新產生 ID 避免覆蓋現有專案，並標示為匯入
-        const newProjects = importedProjects.map(p => ({
-          ...p,
-          id: `proj_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-        }));
 
         const updatedList = [...newProjects, ...projectsList];
         saveProjectsToLocal(updatedList);
@@ -649,7 +764,18 @@ export default function App() {
     return { name: s.name, value: total };
   }).filter(item => item.value > 0);
 
-  const CHART_COLORS = ['#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#84cc16', '#22c55e', '#10b981', '#06b6d4', '#0ea5e9'];
+  const CHART_COLORS = [
+    '#f97316', // 橘色 (Orange)
+    '#ef4444', // 紅色 (Red)
+    '#3b82f6', // 藍色 (Blue)
+    '#22c55e', // 綠色 (Green)
+    '#eab308', // 黃色 (Yellow)
+    '#ec4899', // 粉紅色 (Pink)
+    '#8b5cf6', // 紫色 (Purple)
+    '#06b6d4', // 青色 (Cyan)
+    '#6366f1', // 靛藍色 (Indigo)
+    '#10b981'  // 翠綠色 (Emerald)
+  ];
 
   const addSpace = (type: SpaceType = 'other') => {
     const newId = Math.random().toString(36).substr(2, 9);
@@ -680,6 +806,7 @@ export default function App() {
   const addSegment = () => {
     const newSegment: AreaSegment = { id: Math.random().toString(36).substr(2, 9), name: `區塊 ${activeSpace.segments.length + 1}`, length: 3, width: 2.5, height: 2.4, area: 7.5 };
     setSpaces(spaces.map(s => s.id === activeSpaceId ? { ...s, segments: [...s.segments, newSegment] } : s));
+    setIsEditingSegments(true);
   };
 
   const removeSegment = (segmentId: string) => {
@@ -750,6 +877,22 @@ export default function App() {
     setShowDatabaseModal(false);
   };
 
+  const addMultipleFromDatabase = () => {
+    if (selectedDbItems.length === 0) return;
+    
+    const newItems: EstimationItem[] = databaseItems
+      .filter(item => selectedDbItems.includes(item.id))
+      .map(item => ({
+        ...item,
+        id: Math.random().toString(36).substr(2, 9) + Math.random().toString(36).substr(2, 5),
+        quantity: 1
+      }));
+
+    setSpaces(spaces.map(s => s.id === activeSpaceId ? { ...s, items: [...s.items, ...newItems] } : s));
+    setSelectedDbItems([]);
+    setShowDatabaseModal(false);
+  };
+
   const addDatabaseItem = (category: EstimationItem['category']) => {
     const newItem: EstimationItem = {
       id: Math.random().toString(36).substr(2, 9),
@@ -784,21 +927,28 @@ export default function App() {
     } : s));
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = (projectData?: any) => {
+    const targetQuoteDetails = projectData?.quoteDetails || quoteDetails;
+    const targetSpaces = projectData?.spaces || spaces;
+    const targetCategories = projectData?.categories || categories;
+    
+    const targetGlobalTotal = targetSpaces.reduce((sum: number, space: any) => 
+      sum + space.items.filter((i: any) => !i.hiddenInSummary).reduce((iSum: number, item: any) => iSum + item.price * item.quantity, 0), 0);
+
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
       setAlertMessage('無法開啟新視窗。請檢查您的瀏覽器是否阻擋了彈出視窗（Pop-up blocker）。');
       return;
     }
 
-    const markupAmount = Math.round(globalTotal * (quoteDetails.markup / 100));
-    const subtotalWithMarkup = globalTotal + markupAmount;
-    const taxAmount = Math.round(subtotalWithMarkup * (quoteDetails.tax / 100));
+    const markupAmount = Math.round(targetGlobalTotal * (targetQuoteDetails.markup / 100));
+    const subtotalWithMarkup = targetGlobalTotal + markupAmount;
+    const taxAmount = Math.round(subtotalWithMarkup * (targetQuoteDetails.tax / 100));
     const totalWithTax = subtotalWithMarkup + taxAmount;
 
     // --- Summary by Category for PDF ---
-    const categorySummaryHTML = Object.entries(categories).map(([cat, label]) => {
-      const total = spaces.reduce((sum, s) => sum + s.items.filter(i => i.category === cat && !i.hiddenInSummary).reduce((iSum, i) => iSum + i.price * i.quantity, 0), 0);
+    const categorySummaryHTML = Object.entries(targetCategories).map(([cat, label]) => {
+      const total = targetSpaces.reduce((sum: number, s: any) => sum + s.items.filter((i: any) => i.category === cat && !i.hiddenInSummary).reduce((iSum: number, i: any) => iSum + i.price * i.quantity, 0), 0);
       if (total === 0) return '';
       return `
         <tr class="border-b border-slate-200">
@@ -808,10 +958,10 @@ export default function App() {
       `;
     }).join('');
 
-    const rowsHTML = spaces.map((space, sIndex) => {
-      const visibleItems = space.items.filter(i => !i.hiddenInSummary);
+    const rowsHTML = targetSpaces.map((space: any, sIndex: number) => {
+      const visibleItems = space.items.filter((i: any) => !i.hiddenInSummary);
       if (visibleItems.length === 0) return '';
-      const spaceTotal = visibleItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const spaceTotal = visibleItems.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
       
       let html = `
         <tr class="bg-slate-100 font-bold border-b-2 border-slate-300">
@@ -851,7 +1001,7 @@ export default function App() {
       <html lang="zh-TW">
       <head>
         <meta charset="UTF-8">
-        <title>報價單 - ${quoteDetails.project || '室內裝修工程'}</title>
+        <title>報價單 - ${targetQuoteDetails.project || '室內裝修工程'}</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
@@ -881,10 +1031,10 @@ export default function App() {
             <div class="space-y-2">
               <h1 class="text-4xl font-black text-slate-800 tracking-tighter uppercase mb-4">正式報價單</h1>
               <div class="space-y-1 text-sm text-slate-600">
-                <p class="font-bold text-slate-800 text-lg">${quoteDetails.companyName}</p>
-                <p>電話：${quoteDetails.companyPhone}</p>
-                <p>信箱：${quoteDetails.companyEmail}</p>
-                <p>地址：${quoteDetails.companyAddress}</p>
+                <p class="font-bold text-slate-800 text-lg">${targetQuoteDetails.companyName}</p>
+                <p>電話：${targetQuoteDetails.companyPhone}</p>
+                <p>信箱：${targetQuoteDetails.companyEmail}</p>
+                <p>地址：${targetQuoteDetails.companyAddress}</p>
               </div>
             </div>
             <div class="text-right">
@@ -903,12 +1053,12 @@ export default function App() {
           <div class="grid grid-cols-2 gap-8 mb-10">
             <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
               <h3 class="text-xs font-black text-blue-600 uppercase tracking-widest mb-3">客戶資訊</h3>
-              <p class="text-lg font-bold text-slate-800 mb-1">${quoteDetails.client || '__________________________'}</p>
+              <p class="text-lg font-bold text-slate-800 mb-1">${targetQuoteDetails.client || '__________________________'}</p>
               <p class="text-sm text-slate-500">感謝您的諮詢，以下為本次裝修工程之預估報價。</p>
             </div>
             <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
               <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">專案名稱</h3>
-              <p class="text-lg font-bold text-slate-800">${quoteDetails.project || '__________________________'}</p>
+              <p class="text-lg font-bold text-slate-800">${targetQuoteDetails.project || '__________________________'}</p>
             </div>
           </div>
 
@@ -929,7 +1079,7 @@ export default function App() {
                 ${categorySummaryHTML}
                 <tr class="bg-slate-100 font-bold">
                   <td class="py-3 px-3 text-slate-800">小計 (Subtotal)</td>
-                  <td class="py-3 px-3 text-right font-mono text-slate-900">NT$ ${globalTotal.toLocaleString()}</td>
+                  <td class="py-3 px-3 text-right font-mono text-slate-900">NT$ ${targetGlobalTotal.toLocaleString()}</td>
                 </tr>
               </tbody>
             </table>
@@ -964,17 +1114,17 @@ export default function App() {
             <div class="w-80 bg-slate-900 text-white p-6 rounded-3xl shadow-xl">
               <div class="flex justify-between py-2 border-b border-slate-700 text-sm opacity-80">
                 <span>合計金額：</span>
-                <span class="font-mono">NT$ ${globalTotal.toLocaleString()}</span>
+                <span class="font-mono">NT$ ${targetGlobalTotal.toLocaleString()}</span>
               </div>
-              ${quoteDetails.markup > 0 ? `
+              ${targetQuoteDetails.markup > 0 ? `
               <div class="flex justify-between py-2 border-b border-slate-700 text-sm opacity-80">
-                <span>監工管理費 (${quoteDetails.markup}%)：</span>
+                <span>監工管理費 (${targetQuoteDetails.markup}%)：</span>
                 <span class="font-mono">NT$ ${markupAmount.toLocaleString()}</span>
               </div>
               ` : ''}
-              ${quoteDetails.tax > 0 ? `
+              ${targetQuoteDetails.tax > 0 ? `
               <div class="flex justify-between py-2 border-b border-slate-700 text-sm opacity-80">
-                <span>營業稅 (${quoteDetails.tax}%)：</span>
+                <span>營業稅 (${targetQuoteDetails.tax}%)：</span>
                 <span class="font-mono">NT$ ${taxAmount.toLocaleString()}</span>
               </div>
               ` : ''}
@@ -1068,6 +1218,90 @@ export default function App() {
 
   // --- VIEWS RENDER ---
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 font-sans">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px]" />
+        </div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-10 shadow-2xl overflow-hidden"
+        >
+          <div className="flex flex-col items-center mb-10">
+            <div className="bg-blue-600 p-4 rounded-2xl text-white shadow-xl shadow-blue-600/30 mb-6">
+              <Calculator size={32} />
+            </div>
+            <h1 className="text-3xl font-black text-white tracking-tight mb-2">管理員登入</h1>
+            <p className="text-blue-200/60 text-sm font-medium">建築內裝估算系統 - 授權存取</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-blue-200/80 uppercase tracking-widest ml-1">帳號</label>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300/50">
+                  <User size={20} />
+                </div>
+                <input 
+                  type="text" 
+                  value={loginUsername}
+                  onChange={(e) => setLoginUsername(e.target.value)}
+                  placeholder="請輸入管理員帳號"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-blue-200/80 uppercase tracking-widest ml-1">密碼</label>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300/50">
+                  <Lock size={20} />
+                </div>
+                <input 
+                  type="password" 
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="請輸入管理員密碼"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium"
+                  required
+                />
+              </div>
+            </div>
+
+            {loginError && (
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold py-3 px-4 rounded-xl flex items-center gap-2"
+              >
+                <AlertCircle size={16} /> {loginError}
+              </motion.div>
+            )}
+
+            <button 
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
+            >
+              登入系統 <ArrowRight size={20} />
+            </button>
+          </form>
+
+          <div className="mt-10 pt-8 border-t border-white/5 text-center">
+            <p className="text-white/30 text-[10px] font-bold uppercase tracking-[0.2em]">
+              Authorized Personnel Only
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   if (appState === 'home') {
     return (
       <div className="min-h-screen bg-slate-50 font-sans text-slate-800 flex flex-col">
@@ -1086,13 +1320,7 @@ export default function App() {
               onClick={() => fileInputRef.current?.click()} 
               className="text-slate-600 bg-slate-100 hover:bg-slate-200 px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm"
             >
-              <Upload size={18} /> <span className="hidden sm:inline">匯入備份</span>
-            </button>
-            <button 
-              onClick={handleExportBackup} 
-              className="text-slate-600 bg-slate-100 hover:bg-slate-200 px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm"
-            >
-              <Download size={18} /> <span className="hidden sm:inline">匯出備份</span>
+              <Download size={18} /> <span className="hidden sm:inline">匯入專案</span>
             </button>
             <button 
               onClick={() => setShowNewProjectModal(true)}
@@ -1100,7 +1328,14 @@ export default function App() {
             >
               <FilePlus size={18} /> <span className="hidden sm:inline">建立新專案</span>
             </button>
-            <input type="file" accept=".json" ref={fileInputRef} className="hidden" onChange={handleImportBackup} />
+            <button 
+              onClick={() => setShowLogoutConfirm(true)}
+              className="text-red-600 bg-red-50 hover:bg-red-100 px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-sm"
+              title="登出系統"
+            >
+              <LogOut size={18} /> <span className="hidden sm:inline">登出</span>
+            </button>
+            <input type="file" accept=".json" ref={fileInputRef} className="hidden" onChange={handleImportProject} />
           </div>
         </header>
 
@@ -1146,13 +1381,29 @@ export default function App() {
                       <div className="bg-blue-50 text-blue-600 p-3 rounded-xl group-hover:scale-110 transition-transform">
                         <FileText size={24} />
                       </div>
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); setProjectToDelete({ id: proj.id, name: proj.name }); }}
-                        className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
-                        title="刪除專案"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                      <div className="flex gap-1">
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleExportPDF(proj.data); }}
+                          className="text-slate-300 hover:text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                          title="匯出報價單 (PDF)"
+                        >
+                          <Printer size={18} />
+                        </button>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleExportProject(proj); }}
+                          className="text-slate-300 hover:text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                          title="匯出此專案 (JSON)"
+                        >
+                          <Upload size={18} />
+                        </button>
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); setProjectToDelete({ id: proj.id, name: proj.name }); }}
+                          className="text-slate-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                          title="刪除專案"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </div>
                     
                     <h3 className="text-lg font-bold text-slate-800 mb-1 truncate">{proj.name || '未命名專案'}</h3>
@@ -1258,21 +1509,30 @@ export default function App() {
           </div>
         </div>
         
-        <div className="flex items-center gap-4 flex-wrap justify-end">
-          <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200/60 shadow-inner overflow-x-auto hide-scrollbar max-w-[calc(100vw-360px)]">
-            <button title="儀表板" onClick={() => setViewMode('dashboard')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'dashboard' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><LayoutGrid size={18} /> <span className="hidden lg:inline">儀表板</span></button>
-            <button title="空間設定" onClick={() => setViewMode('space_management')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'space_management' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><Settings size={18} /> <span className="hidden lg:inline">空間設定</span></button>
-            <button title="估價明細" onClick={() => setViewMode('detail')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'detail' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><Layers size={18} /> <span className="hidden lg:inline">估價明細</span></button>
-            <button title="換算設定" onClick={() => setViewMode('calculation')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'calculation' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><Droplets size={18} /> <span className="hidden lg:inline">換算設定</span></button>
-            <button title="資料庫" onClick={() => setViewMode('database')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'database' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><Database size={18} /> <span className="hidden lg:inline">資料庫</span></button>
-            <button title="總結報告" onClick={() => setViewMode('summary')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'summary' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><FileText size={18} /> <span className="hidden lg:inline">總結報告</span></button>
+        <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-end flex-1">
+          <div className="flex bg-slate-100 p-1 rounded-lg sm:p-1.5 sm:rounded-xl border border-slate-200/60 shadow-inner overflow-x-auto hide-scrollbar max-w-full lg:max-w-[calc(100vw-500px)] order-2 lg:order-1">
+            <button title="儀表板" onClick={() => setViewMode('dashboard')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'dashboard' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><LayoutGrid size={18} /> <span className="hidden lg:inline">儀表板</span></button>
+            <button title="空間設定" onClick={() => setViewMode('space_management')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'space_management' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><Settings size={18} /> <span className="hidden lg:inline">空間設定</span></button>
+            <button title="估價明細" onClick={() => setViewMode('detail')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'detail' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><Layers size={18} /> <span className="hidden lg:inline">估價明細</span></button>
+            <button title="換算設定" onClick={() => setViewMode('calculation')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'calculation' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><Droplets size={18} /> <span className="hidden lg:inline">換算設定</span></button>
+            <button title="資料庫" onClick={() => setViewMode('database')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'database' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><Database size={18} /> <span className="hidden lg:inline">資料庫</span></button>
+            <button title="總結報告" onClick={() => setViewMode('summary')} className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${viewMode === 'summary' ? 'bg-white text-blue-600 shadow-sm border-slate-200' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}><FileText size={18} /> <span className="hidden lg:inline">總結報告</span></button>
           </div>
-          <button 
-            onClick={() => saveCurrentProject(true)}
-            className="flex items-center gap-2 bg-slate-800 text-white hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors"
-          >
-            <Save size={16} /> 儲存專案
-          </button>
+          <div className="flex items-center gap-2 order-1 lg:order-2">
+            <button 
+              onClick={() => saveCurrentProject(true)}
+              className="flex items-center gap-1.5 sm:gap-2 bg-slate-800 text-white hover:bg-slate-700 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-colors"
+            >
+              <Save size={16} /> <span className="hidden sm:inline">儲存</span>
+            </button>
+            <button 
+              onClick={() => setShowLogoutConfirm(true)}
+              className="text-red-600 bg-red-50 hover:bg-red-100 px-2.5 sm:px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all shadow-sm"
+              title="登出系統"
+            >
+              <LogOut size={16} /> <span className="hidden sm:inline">登出</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -1400,27 +1660,27 @@ export default function App() {
                 <div className="pt-4 border-t border-slate-100">
                   <div className="flex justify-between items-center mb-4">
                     <label className="text-sm font-bold text-slate-800 flex items-center gap-2"><Square size={16} className="text-blue-500" />空間面積 / 高度分區</label>
-                    <button onClick={addSegment} className="text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors shadow-sm text-xs font-bold flex items-center gap-1">
-                      <Plus size={14} /> 新增區塊
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <button onClick={() => setIsEditingSegments(!isEditingSegments)} className={`px-3 py-1.5 rounded-lg transition-colors text-xs font-bold ${isEditingSegments ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>{isEditingSegments ? '完成' : '編輯'}</button>
+                      <button onClick={addSegment} className="text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors shadow-sm text-xs font-bold flex items-center gap-1">
+                        <Plus size={14} /> 新增區塊
+                      </button>
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                     {activeSpace.segments.map((segment) => (
                       <div key={segment.id} className="bg-slate-50/80 p-4 rounded-xl border border-slate-200 space-y-3 relative group">
                         <div className="flex items-center justify-between">
-                          <input type="text" value={segment.name ?? ''} disabled={editingSegmentId !== segment.id} onChange={(e) => updateSegment(segment.id, 'name', e.target.value)} className="text-sm font-bold bg-transparent border-b-2 border-transparent focus:border-blue-500 outline-none px-1 py-0.5 w-32 disabled:border-transparent text-slate-800" placeholder="區塊名稱" />
+                          <input type="text" value={segment.name ?? ''} disabled={!isEditingSegments} onChange={(e) => updateSegment(segment.id, 'name', e.target.value)} className="text-sm font-bold bg-transparent border-b-2 border-transparent focus:border-blue-500 outline-none px-1 py-0.5 w-32 disabled:border-transparent text-slate-800" placeholder="區塊名稱" />
                           <div className="flex items-center gap-1 transition-opacity">
-                            <button onClick={() => setEditingSegmentId(editingSegmentId === segment.id ? null : segment.id)} className={`p-1.5 rounded-md transition-colors ${editingSegmentId === segment.id ? 'bg-green-100 text-green-700' : 'bg-white border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-300'}`}>
-                              {editingSegmentId === segment.id ? <Check size={14}/> : <Edit2 size={14}/>}
-                            </button>
-                            <button onClick={() => removeSegment(segment.id)} className="bg-white border border-slate-200 text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 p-1.5 rounded-md transition-colors"><Trash2 size={14} /></button>
+                            <button onClick={() => removeSegment(segment.id)} disabled={!isEditingSegments} className="bg-white border border-slate-200 text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 p-1.5 rounded-md transition-colors disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-slate-400 disabled:hover:border-slate-200"><Trash2 size={14} /></button>
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
-                          <div className="space-y-1"><label className="text-[10px] text-slate-500 font-semibold uppercase">長 (m)</label><input type="number" step="0.1" value={segment.length ?? 0} disabled={editingSegmentId !== segment.id} onChange={(e) => updateSegment(segment.id, 'length', Number(e.target.value))} className="w-full bg-white border border-slate-200 rounded-md py-1.5 px-2 text-sm font-mono text-slate-700 disabled:opacity-60 disabled:bg-slate-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all" /></div>
-                          <div className="space-y-1"><label className="text-[10px] text-slate-500 font-semibold uppercase">寬 (m)</label><input type="number" step="0.1" value={segment.width ?? 0} disabled={editingSegmentId !== segment.id} onChange={(e) => updateSegment(segment.id, 'width', Number(e.target.value))} className="w-full bg-white border border-slate-200 rounded-md py-1.5 px-2 text-sm font-mono text-slate-700 disabled:opacity-60 disabled:bg-slate-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all" /></div>
-                          <div className="space-y-1"><label className="text-[10px] text-slate-500 font-semibold uppercase">面積 (m²)</label><input type="number" step="0.1" value={segment.area ?? 0} disabled={editingSegmentId !== segment.id} onChange={(e) => updateSegment(segment.id, 'area', Number(e.target.value))} className="w-full bg-white border border-slate-200 rounded-md py-1.5 px-2 text-sm font-mono text-blue-700 font-bold disabled:opacity-60 disabled:bg-slate-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all" /></div>
-                          <div className="space-y-1"><label className="text-[10px] text-slate-500 font-semibold uppercase">牆高 (m)</label><input type="number" step="0.1" value={segment.height ?? 0} disabled={editingSegmentId !== segment.id} onChange={(e) => updateSegment(segment.id, 'height', Number(e.target.value))} className="w-full bg-white border border-slate-200 rounded-md py-1.5 px-2 text-sm font-mono text-slate-700 disabled:opacity-60 disabled:bg-slate-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all" /></div>
+                          <div className="space-y-1"><label className="text-[10px] text-slate-500 font-semibold uppercase">長 (m)</label><input type="number" step="0.1" value={segment.length ?? 0} disabled={!isEditingSegments} onChange={(e) => updateSegment(segment.id, 'length', Number(e.target.value))} className="w-full bg-white border border-slate-200 rounded-md py-1.5 px-2 text-sm font-mono text-slate-700 disabled:opacity-60 disabled:bg-slate-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all" /></div>
+                          <div className="space-y-1"><label className="text-[10px] text-slate-500 font-semibold uppercase">寬 (m)</label><input type="number" step="0.1" value={segment.width ?? 0} disabled={!isEditingSegments} onChange={(e) => updateSegment(segment.id, 'width', Number(e.target.value))} className="w-full bg-white border border-slate-200 rounded-md py-1.5 px-2 text-sm font-mono text-slate-700 disabled:opacity-60 disabled:bg-slate-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all" /></div>
+                          <div className="space-y-1"><label className="text-[10px] text-slate-500 font-semibold uppercase">面積 (m²)</label><input type="number" step="0.1" value={segment.area ?? 0} disabled={!isEditingSegments} onChange={(e) => updateSegment(segment.id, 'area', Number(e.target.value))} className="w-full bg-white border border-slate-200 rounded-md py-1.5 px-2 text-sm font-mono text-blue-700 font-bold disabled:opacity-60 disabled:bg-slate-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all" /></div>
+                          <div className="space-y-1"><label className="text-[10px] text-slate-500 font-semibold uppercase">牆高 (m)</label><input type="number" step="0.1" value={segment.height ?? 0} disabled={!isEditingSegments} onChange={(e) => updateSegment(segment.id, 'height', Number(e.target.value))} className="w-full bg-white border border-slate-200 rounded-md py-1.5 px-2 text-sm font-mono text-slate-700 disabled:opacity-60 disabled:bg-slate-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all" /></div>
                         </div>
                         <div className="flex items-center justify-between pt-3 border-t border-slate-200/80">
                           <span className="text-[11px] font-mono text-slate-500">地面: <strong className="text-slate-800">{segment.area.toFixed(2)}</strong> m²</span>
@@ -1514,17 +1774,17 @@ export default function App() {
                       <Database size={16} /> 從資料庫加入材料
                     </button>
                   </div>
-                  <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div className="overflow-x-auto pb-2">
-                      <table className="w-full text-left border-collapse text-xs whitespace-nowrap table-fixed min-w-[800px]">
+                  <div className="bg-white rounded-2xl shadow-md border border-slate-200/60 overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-[11px] sm:text-xs whitespace-nowrap table-fixed min-w-[850px]">
                         <thead>
-                          <tr className="bg-slate-50 border-b border-slate-200">
-                            <th className="px-4 py-3 font-bold text-slate-500 w-[35%]">項目 / 品牌 / 規格</th>
-                            <th className="px-3 py-3 font-bold text-slate-500 w-[10%]">單位</th>
-                            <th className="px-3 py-3 font-bold text-slate-500 w-[15%] text-right">單價</th>
-                            <th className="px-3 py-3 font-bold text-slate-500 w-[15%] text-right">數量</th>
-                            <th className="px-4 py-3 font-bold text-slate-500 w-[15%] text-right">小計</th>
-                            <th className="px-4 py-3 w-[10%] text-center">操作</th>
+                          <tr className="bg-slate-50/80 border-b border-slate-200">
+                            <th className="px-4 py-3.5 font-bold text-slate-500 w-[38%] uppercase tracking-wider">項目 / 品牌 / 規格</th>
+                            <th className="px-3 py-3.5 font-bold text-slate-500 w-[8%] text-center uppercase tracking-wider">單位</th>
+                            <th className="px-3 py-3.5 font-bold text-slate-500 w-[14%] text-right uppercase tracking-wider">單價</th>
+                            <th className="px-3 py-3.5 font-bold text-slate-500 w-[14%] text-right uppercase tracking-wider">數量</th>
+                            <th className="px-4 py-3.5 font-bold text-slate-500 w-[16%] text-right uppercase tracking-wider">小計</th>
+                            <th className="px-4 py-3.5 w-[10%] text-center uppercase tracking-wider">操作</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -1533,19 +1793,26 @@ export default function App() {
                             if (catItems.length === 0) return null;
                             return (
                               <React.Fragment key={cat}>
-                                <tr className="bg-slate-50/50"><td colSpan={6} className="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-t border-slate-100">▍{categories[cat]}</td></tr>
+                                <tr className="bg-slate-50/30">
+                                  <td colSpan={6} className="px-4 py-2 text-[10px] font-extrabold text-blue-600/70 uppercase tracking-[0.15em] border-t border-slate-100 bg-blue-50/20">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                                      {categories[cat]}
+                                    </div>
+                                  </td>
+                                </tr>
                                 <AnimatePresence initial={false}>
                                     {catItems.map((item) => {
                                       const isEditing = editingItemId === item.id;
                                       return (
-                                        <motion.tr key={item.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="hover:bg-slate-50 transition-colors group">
-                                          <td className="px-4 py-2.5">
+                                        <motion.tr key={item.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="hover:bg-blue-50/30 transition-colors group">
+                                          <td className="px-4 py-3">
                                             <div className="flex flex-col gap-1 w-full">
                                               {isEditing ? (
                                                 <div className="flex items-center gap-2">
-                                                  <input type="text" value={item.name ?? ''} onChange={(e) => updateItem(item.id, 'name', e.target.value)} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 font-bold text-slate-800 outline-none focus:ring-1 focus:ring-blue-500 text-xs" placeholder="項目名稱" />
+                                                  <input type="text" value={item.name ?? ''} onChange={(e) => updateItem(item.id, 'name', e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" placeholder="項目名稱" />
                                                   {cat === 'tile' && (
-                                                    <select value={item.tileType || 'floor'} onChange={(e) => updateItem(item.id, 'tileType', e.target.value as 'floor' | 'wall')} className="w-16 shrink-0 bg-white border border-slate-300 rounded px-1 py-1 text-[11px] text-teal-700 font-bold outline-none focus:ring-1 focus:ring-blue-500">
+                                                    <select value={item.tileType || 'floor'} onChange={(e) => updateItem(item.id, 'tileType', e.target.value as 'floor' | 'wall')} className="w-20 shrink-0 bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-[11px] text-teal-700 font-bold outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
                                                       <option value="floor">地磚</option>
                                                       <option value="wall">壁磚</option>
                                                     </select>
@@ -1553,54 +1820,54 @@ export default function App() {
                                                 </div>
                                               ) : (
                                                 <div className="flex items-center gap-2">
-                                                  <span className="font-bold text-slate-800 text-sm truncate">{item.name}</span>
+                                                  <span className="font-bold text-slate-800 text-sm sm:text-[13px] truncate">{item.name}</span>
                                                   {cat === 'tile' && item.tileType && (
-                                                    <span className={`text-[10px] shrink-0 px-1.5 py-0.5 rounded font-medium border ${item.tileType === 'wall' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-teal-50 text-teal-700 border-teal-100'}`}>
+                                                    <span className={`text-[9px] shrink-0 px-1.5 py-0.5 rounded-md font-bold border ${item.tileType === 'wall' ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 'bg-teal-50 text-teal-600 border-teal-100'}`}>
                                                       {item.tileType === 'wall' ? '壁磚' : '地磚'}
                                                     </span>
                                                   )}
                                                 </div>
                                               )}
-                                              <div className="flex items-center gap-1.5 mt-0.5 w-full">
+                                              <div className="flex items-center gap-2 mt-0.5 w-full">
                                                 {isEditing ? (
                                                   <>
-                                                    <input type="text" value={item.brand || ''} onChange={(e) => updateItem(item.id, 'brand', e.target.value)} className="w-16 shrink-0 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-[11px] outline-none focus:ring-1 focus:ring-blue-500" placeholder="品牌" />
-                                                    {cat === 'tile' && <input type="text" value={item.size || ''} onChange={(e) => updateItem(item.id, 'size', e.target.value)} className="w-16 shrink-0 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-[11px] text-blue-600 font-bold outline-none focus:ring-1 focus:ring-blue-500" placeholder="尺寸" />}
-                                                    <input type="text" value={item.remarks || ''} onChange={(e) => updateItem(item.id, 'remarks', e.target.value)} className="flex-1 w-full bg-white border border-slate-300 rounded px-1.5 py-0.5 text-[11px] italic outline-none focus:ring-1 focus:ring-blue-500" placeholder="備註說明..." />
+                                                    <input type="text" value={item.brand || ''} onChange={(e) => updateItem(item.id, 'brand', e.target.value)} className="w-20 shrink-0 bg-white border border-slate-300 rounded-lg px-2 py-1 text-[11px] outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="品牌" />
+                                                    {cat === 'tile' && <input type="text" value={item.size || ''} onChange={(e) => updateItem(item.id, 'size', e.target.value)} className="w-20 shrink-0 bg-white border border-slate-300 rounded-lg px-2 py-1 text-[11px] text-blue-600 font-bold outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="尺寸" />}
+                                                    <input type="text" value={item.remarks || ''} onChange={(e) => updateItem(item.id, 'remarks', e.target.value)} className="flex-1 w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-[11px] italic outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="備註說明..." />
                                                   </>
                                                 ) : (
                                                   <>
-                                                    {item.brand && <span className="text-[10px] shrink-0 bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium truncate max-w-[80px]">{item.brand}</span>}
-                                                    {cat === 'tile' && item.size && <span className="text-[10px] shrink-0 bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-medium border border-blue-100 truncate max-w-[80px]">{item.size}</span>}
-                                                    {item.remarks && <span className="text-[10px] text-slate-400 italic truncate w-full flex-1">{item.remarks}</span>}
+                                                    {item.brand && <span className="text-[10px] shrink-0 bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md font-bold border border-slate-200/60 truncate max-w-[100px]">{item.brand}</span>}
+                                                    {cat === 'tile' && item.size && <span className="text-[10px] shrink-0 bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md font-bold border border-blue-100 truncate max-w-[100px]">{item.size}</span>}
+                                                    {item.remarks && <span className="text-[10px] text-slate-400 italic truncate w-full flex-1 ml-1"># {item.remarks}</span>}
                                                   </>
                                                 )}
                                               </div>
                                             </div>
                                           </td>
-                                          <td className="px-3 py-2.5">
-                                            {isEditing ? <input type="text" value={item.unit ?? ''} onChange={(e) => updateItem(item.id, 'unit', e.target.value)} className="w-12 bg-white border border-slate-300 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="text-slate-600 font-medium">{item.unit}</span>}
+                                          <td className="px-3 py-3 text-center">
+                                            {isEditing ? <input type="text" value={item.unit ?? ''} onChange={(e) => updateItem(item.id, 'unit', e.target.value)} className="w-14 bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-center outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" /> : <span className="text-slate-500 font-bold bg-slate-100/80 px-2 py-1 rounded-md">{item.unit}</span>}
                                           </td>
-                                          <td className="px-3 py-2.5 text-right">
-                                            {isEditing ? <input type="number" value={item.price ?? 0} onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 text-right font-mono outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="font-mono text-slate-600">{(item.price).toLocaleString()}</span>}
+                                          <td className="px-3 py-3 text-right">
+                                            {isEditing ? <input type="number" value={item.price ?? 0} onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-right font-mono outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" /> : <span className="font-mono text-slate-600 font-medium">{(item.price).toLocaleString()}</span>}
                                           </td>
-                                          <td className="px-3 py-2.5 text-right">
-                                            {isEditing ? <input type="number" step="0.1" value={item.quantity ?? 0} onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 text-right font-mono outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">{item.quantity}</span>}
+                                          <td className="px-3 py-3 text-right">
+                                            {isEditing ? <input type="number" step="0.1" value={item.quantity ?? 0} onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-right font-mono outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" /> : <span className="font-mono font-black text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100/50">{item.quantity}</span>}
                                           </td>
-                                          <td className="px-4 py-2.5 text-right font-bold text-blue-600 font-mono text-[13px]">
+                                          <td className="px-4 py-3 text-right font-black text-slate-900 font-mono text-sm">
                                             {(item.price * item.quantity).toLocaleString()}
                                           </td>
-                                          <td className="px-4 py-2.5 text-center">
-                                            <div className="flex items-center justify-center gap-1 transition-opacity">
+                                          <td className="px-4 py-3 text-center">
+                                            <div className="flex items-center justify-center gap-1.5">
                                               {isEditing ? (
                                                 <>
-                                                  <button onClick={() => setEditingItemId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1 rounded transition-colors shadow-sm" title="儲存"><Check size={12} /></button>
-                                                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
+                                                  <button onClick={() => setEditingItemId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1.5 rounded-lg transition-all shadow-sm active:scale-95" title="儲存"><Check size={14} strokeWidth={3} /></button>
+                                                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-all active:scale-95" title="刪除"><Trash2 size={14} /></button>
                                                 </>
                                               ) : (
                                                 <>
-                                                  <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded transition-colors" title="編輯"><Edit2 size={14} /></button>
-                                                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
+                                                  <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-all active:scale-95" title="編輯"><Edit2 size={16} /></button>
+                                                  <button onClick={() => removeItem(item.id)} className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all active:scale-95" title="刪除"><Trash2 size={16} /></button>
                                                 </>
                                               )}
                                             </div>
@@ -1612,6 +1879,19 @@ export default function App() {
                               </React.Fragment>
                             );
                           })}
+                          {/* Section Total Row */}
+                          {activeSpace.items.filter(i => ['basic_material', 'flooring', 'wall', 'ceiling', 'lighting'].includes(i.category)).length > 0 && (
+                            <tr className="bg-slate-50/50 font-bold">
+                              <td colSpan={4} className="px-4 py-4 text-right text-slate-500 uppercase tracking-wider">建材費用小計</td>
+                              <td className="px-4 py-4 text-right text-blue-700 font-mono text-base border-t-2 border-blue-100">
+                                {activeSpace.items
+                                  .filter(i => ['basic_material', 'flooring', 'wall', 'ceiling', 'lighting'].includes(i.category))
+                                  .reduce((sum, item) => sum + (item.price * item.quantity), 0)
+                                  .toLocaleString()}
+                              </td>
+                              <td></td>
+                            </tr>
+                          )}
                         </tbody>
                       </table>
                     </div>
@@ -1625,57 +1905,57 @@ export default function App() {
                       <Database size={16} /> 從資料庫加入設備
                     </button>
                   </div>
-                  <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div className="overflow-x-auto pb-2">
-                      <table className="w-full text-left border-collapse text-xs whitespace-nowrap table-fixed min-w-[800px]">
+                  <div className="bg-white rounded-2xl shadow-md border border-slate-200/60 overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-[11px] sm:text-xs whitespace-nowrap table-fixed min-w-[850px]">
                         <thead>
-                          <tr className="bg-slate-50 border-b border-slate-200">
-                            <th className="px-4 py-3 font-bold text-slate-500 w-[35%]">設備名稱 / 品牌 / 備註</th>
-                            <th className="px-3 py-3 font-bold text-slate-500 w-[10%]">單位</th>
-                            <th className="px-3 py-3 font-bold text-slate-500 w-[15%] text-right">單價</th>
-                            <th className="px-3 py-3 font-bold text-slate-500 w-[15%] text-right">數量</th>
-                            <th className="px-4 py-3 font-bold text-slate-500 w-[15%] text-right">小計</th>
-                            <th className="px-4 py-3 w-[10%] text-center">操作</th>
+                          <tr className="bg-slate-50/80 border-b border-slate-200">
+                            <th className="px-4 py-3.5 font-bold text-slate-500 w-[38%] uppercase tracking-wider">設備名稱 / 品牌 / 備註</th>
+                            <th className="px-3 py-3.5 font-bold text-slate-500 w-[8%] text-center uppercase tracking-wider">單位</th>
+                            <th className="px-3 py-3.5 font-bold text-slate-500 w-[14%] text-right uppercase tracking-wider">單價</th>
+                            <th className="px-3 py-3.5 font-bold text-slate-500 w-[14%] text-right uppercase tracking-wider">數量</th>
+                            <th className="px-4 py-3.5 font-bold text-slate-500 w-[16%] text-right uppercase tracking-wider">小計</th>
+                            <th className="px-4 py-3.5 w-[10%] text-center uppercase tracking-wider">操作</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                           {activeSpace.items.filter(i => i.category === 'kitchen_equipment' || i.category === 'bath_equipment' || i.category === 'equipment').map((item) => {
                             const isEditing = editingItemId === item.id;
                             return (
-                              <motion.tr key={item.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="hover:bg-slate-50 transition-colors group">
-                                <td className="px-4 py-2.5">
+                              <motion.tr key={item.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="hover:bg-blue-50/30 transition-colors group">
+                                <td className="px-4 py-3">
                                   <div className="flex flex-col gap-1 w-full">
-                                    {isEditing ? <input type="text" value={item.name ?? ''} onChange={(e) => updateItem(item.id, 'name', e.target.value)} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 font-bold text-slate-800 outline-none focus:ring-1 focus:ring-blue-500 text-xs" placeholder="設備名稱" /> : <div className="font-bold text-slate-800 text-sm truncate">{item.name}</div>}
-                                    <div className="flex items-center gap-1.5 mt-0.5 w-full">
+                                    {isEditing ? <input type="text" value={item.name ?? ''} onChange={(e) => updateItem(item.id, 'name', e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" placeholder="設備名稱" /> : <div className="font-bold text-slate-800 text-sm sm:text-[13px] truncate">{item.name}</div>}
+                                    <div className="flex items-center gap-2 mt-0.5 w-full">
                                       {isEditing ? (
                                         <>
-                                          <input type="text" value={item.brand || ''} onChange={(e) => updateItem(item.id, 'brand', e.target.value)} className="w-20 shrink-0 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-[11px] outline-none focus:ring-1 focus:ring-blue-500" placeholder="品牌 / 規格" />
-                                          <input type="text" value={item.remarks || ''} onChange={(e) => updateItem(item.id, 'remarks', e.target.value)} className="flex-1 w-full bg-white border border-slate-300 rounded px-1.5 py-0.5 text-[11px] italic outline-none focus:ring-1 focus:ring-blue-500" placeholder="備註說明..." />
+                                          <input type="text" value={item.brand || ''} onChange={(e) => updateItem(item.id, 'brand', e.target.value)} className="w-24 shrink-0 bg-white border border-slate-300 rounded-lg px-2 py-1 text-[11px] outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="品牌 / 規格" />
+                                          <input type="text" value={item.remarks || ''} onChange={(e) => updateItem(item.id, 'remarks', e.target.value)} className="flex-1 w-full bg-white border border-slate-300 rounded-lg px-2 py-1 text-[11px] italic outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="備註說明..." />
                                         </>
                                       ) : (
                                         <>
-                                          {item.brand && <span className="text-[10px] shrink-0 bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-medium truncate max-w-[80px]">{item.brand}</span>}
-                                          {item.remarks && <span className="text-[10px] text-slate-400 italic truncate w-full flex-1">{item.remarks}</span>}
+                                          {item.brand && <span className="text-[10px] shrink-0 bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md font-bold border border-slate-200/60 truncate max-w-[100px]">{item.brand}</span>}
+                                          {item.remarks && <span className="text-[10px] text-slate-400 italic truncate w-full flex-1 ml-1"># {item.remarks}</span>}
                                         </>
                                       )}
                                     </div>
                                   </div>
                                 </td>
-                                <td className="px-3 py-2.5">{isEditing ? <input type="text" value={item.unit ?? ''} onChange={(e) => updateItem(item.id, 'unit', e.target.value)} className="w-12 bg-white border border-slate-300 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="text-slate-600 font-medium">{item.unit}</span>}</td>
-                                <td className="px-3 py-2.5 text-right">{isEditing ? <input type="number" value={item.price ?? 0} onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 text-right font-mono outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="font-mono text-slate-600">{(item.price).toLocaleString()}</span>}</td>
-                                <td className="px-3 py-2.5 text-right">{isEditing ? <input type="number" step="0.1" value={item.quantity ?? 0} onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 text-right font-mono outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">{item.quantity}</span>}</td>
-                                <td className="px-4 py-2.5 text-right font-bold text-blue-600 font-mono text-[13px]">{(item.price * item.quantity).toLocaleString()}</td>
-                                <td className="px-4 py-2.5 text-center">
-                                  <div className="flex items-center justify-center gap-1 transition-opacity">
+                                <td className="px-3 py-3 text-center">{isEditing ? <input type="text" value={item.unit ?? ''} onChange={(e) => updateItem(item.id, 'unit', e.target.value)} className="w-14 bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-center outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" /> : <span className="text-slate-500 font-bold bg-slate-100/80 px-2 py-1 rounded-md">{item.unit}</span>}</td>
+                                <td className="px-3 py-3 text-right">{isEditing ? <input type="number" value={item.price ?? 0} onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-right font-mono outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" /> : <span className="font-mono text-slate-600 font-medium">{(item.price).toLocaleString()}</span>}</td>
+                                <td className="px-3 py-3 text-right">{isEditing ? <input type="number" step="0.1" value={item.quantity ?? 0} onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-right font-mono outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" /> : <span className="font-mono font-black text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100/50">{item.quantity}</span>}</td>
+                                <td className="px-4 py-3 text-right font-black text-slate-900 font-mono text-sm">{(item.price * item.quantity).toLocaleString()}</td>
+                                <td className="px-4 py-3 text-center">
+                                  <div className="flex items-center justify-center gap-1.5">
                                     {isEditing ? (
                                       <>
-                                        <button onClick={() => setEditingItemId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1 rounded transition-colors shadow-sm" title="儲存"><Check size={12} /></button>
-                                        <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
+                                        <button onClick={() => setEditingItemId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1.5 rounded-lg transition-all shadow-sm active:scale-95" title="儲存"><Check size={14} strokeWidth={3} /></button>
+                                        <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-all active:scale-95" title="刪除"><Trash2 size={14} /></button>
                                       </>
                                     ) : (
                                       <>
-                                        <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded transition-colors" title="編輯"><Edit2 size={14} /></button>
-                                        <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
+                                        <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-all active:scale-95" title="編輯"><Edit2 size={16} /></button>
+                                        <button onClick={() => removeItem(item.id)} className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all active:scale-95" title="刪除"><Trash2 size={16} /></button>
                                       </>
                                     )}
                                   </div>
@@ -1684,7 +1964,20 @@ export default function App() {
                             );
                           })}
                           {activeSpace.items.filter(i => i.category === 'kitchen_equipment' || i.category === 'bath_equipment' || i.category === 'equipment').length === 0 && (
-                            <tr><td colSpan={6} className="py-8 text-center text-slate-400"><Package size={32} className="mx-auto mb-2 opacity-50" /><p>尚無任何設備，請從上方「從資料庫加入設備」提取</p></td></tr>
+                            <tr><td colSpan={6} className="py-10 text-center text-slate-400 bg-slate-50/30"><Package size={40} className="mx-auto mb-3 opacity-20" /><p className="font-medium">尚無任何設備，請從上方「從資料庫加入設備」提取</p></td></tr>
+                          )}
+                          {/* Section Total Row */}
+                          {activeSpace.items.filter(i => i.category === 'kitchen_equipment' || i.category === 'bath_equipment' || i.category === 'equipment').length > 0 && (
+                            <tr className="bg-slate-50/50 font-bold">
+                              <td colSpan={4} className="px-4 py-4 text-right text-slate-500 uppercase tracking-wider">設備費用小計</td>
+                              <td className="px-4 py-4 text-right text-blue-700 font-mono text-base border-t-2 border-blue-100">
+                                {activeSpace.items
+                                  .filter(i => i.category === 'kitchen_equipment' || i.category === 'bath_equipment' || i.category === 'equipment')
+                                  .reduce((sum, item) => sum + (item.price * item.quantity), 0)
+                                  .toLocaleString()}
+                              </td>
+                              <td></td>
+                            </tr>
                           )}
                         </tbody>
                       </table>
@@ -1694,22 +1987,30 @@ export default function App() {
 
                 <section className="space-y-4">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-200">
-                    <div className="flex items-center gap-2 text-slate-800 text-base font-bold"><User size={18} className="text-blue-500" /><span>其他費用明細 (工資、廢棄物清運等)</span></div>
-                    <button onClick={() => setShowDatabaseModal(true)} className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 text-sm font-bold flex items-center gap-2 transition-colors rounded-lg shadow-sm">
+                    <div className="flex items-center gap-2 text-slate-800 text-base font-bold">
+                      <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                        <User size={18} />
+                      </div>
+                      <span>其他費用明細 (工資、廢棄物清運等)</span>
+                    </div>
+                    <button 
+                      onClick={() => setShowDatabaseModal(true)} 
+                      className="bg-blue-600 text-white hover:bg-blue-700 active:scale-95 px-4 py-2 text-sm font-bold flex items-center gap-2 transition-all rounded-xl shadow-sm hover:shadow-md"
+                    >
                       <Database size={16} /> 從資料庫加入項目
                     </button>
                   </div>
                   <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div className="overflow-x-auto pb-2">
+                    <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse text-xs whitespace-nowrap table-fixed min-w-[800px]">
                         <thead>
-                          <tr className="bg-slate-50 border-b border-slate-200">
-                            <th className="px-4 py-3 font-bold text-slate-500 w-[35%]">項目 / 說明</th>
-                            <th className="px-3 py-3 font-bold text-slate-500 w-[10%]">單位</th>
-                            <th className="px-3 py-3 font-bold text-slate-500 w-[15%] text-right">單價</th>
-                            <th className="px-3 py-3 font-bold text-slate-500 w-[15%] text-right">數量</th>
-                            <th className="px-4 py-3 font-bold text-slate-500 w-[15%] text-right">小計</th>
-                            <th className="px-4 py-3 w-[10%] text-center">操作</th>
+                          <tr className="bg-slate-50/80 border-b border-slate-200">
+                            <th className="px-4 py-3.5 font-bold text-slate-500 w-[35%] uppercase tracking-wider">項目 / 說明</th>
+                            <th className="px-3 py-3.5 font-bold text-slate-500 w-[10%] uppercase tracking-wider">單位</th>
+                            <th className="px-3 py-3.5 font-bold text-slate-500 w-[15%] text-right uppercase tracking-wider">單價</th>
+                            <th className="px-3 py-3.5 font-bold text-slate-500 w-[15%] text-right uppercase tracking-wider">數量</th>
+                            <th className="px-4 py-3.5 font-bold text-slate-500 w-[15%] text-right uppercase tracking-wider">小計</th>
+                            <th className="px-4 py-3.5 w-[10%] text-center uppercase tracking-wider">操作</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -1718,55 +2019,104 @@ export default function App() {
                             if (catItems.length === 0) return null;
                             return (
                               <React.Fragment key={cat}>
-                                <tr className="bg-slate-50/50"><td colSpan={6} className="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-t border-slate-100">▍{categories[cat]}</td></tr>
+                                <tr className="bg-blue-50/10">
+                                  <td colSpan={6} className="px-4 py-2.5 border-t border-slate-100">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">{categories[cat]}</span>
+                                    </div>
+                                  </td>
+                                </tr>
                                 <AnimatePresence initial={false}>
                                     {catItems.map((item) => {
                                       const isEditing = editingItemId === item.id;
                                       return (
-                                        <motion.tr key={item.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="hover:bg-slate-50 transition-colors group">
-                                          <td className="px-4 py-2.5">
+                                        <motion.tr 
+                                          key={item.id} 
+                                          initial={{ opacity: 0, y: 4 }} 
+                                          animate={{ opacity: 1, y: 0 }} 
+                                          exit={{ opacity: 0, scale: 0.95 }} 
+                                          className="hover:bg-blue-50/30 transition-colors group"
+                                        >
+                                          <td className="px-4 py-3">
                                             <div className="flex flex-col gap-1 w-full">
                                               {isEditing ? (
-                                                <div className="flex items-center gap-2">
-                                                  <input type="text" value={item.name ?? ''} onChange={(e) => updateItem(item.id, 'name', e.target.value)} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 font-bold text-slate-800 outline-none focus:ring-1 focus:ring-blue-500 text-xs" placeholder="項目名稱" />
-                                                </div>
+                                                <input 
+                                                  type="text" 
+                                                  value={item.name ?? ''} 
+                                                  onChange={(e) => updateItem(item.id, 'name', e.target.value)} 
+                                                  className="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" 
+                                                  placeholder="項目名稱" 
+                                                />
                                               ) : (
-                                                <div className="flex items-center gap-2">
-                                                  <span className="font-bold text-slate-800 text-sm truncate">{item.name}</span>
-                                                </div>
+                                                <span className="font-bold text-slate-800 text-sm truncate group-hover:text-blue-700 transition-colors">{item.name}</span>
                                               )}
-                                              <div className="flex items-center gap-1.5 mt-0.5 w-full">
+                                              <div className="flex items-center gap-1.5 w-full">
                                                 {isEditing ? (
-                                                  <input type="text" value={item.remarks || ''} onChange={(e) => updateItem(item.id, 'remarks', e.target.value)} className="flex-1 w-full bg-white border border-slate-300 rounded px-1.5 py-0.5 text-[11px] italic outline-none focus:ring-1 focus:ring-blue-500" placeholder="備註說明..." />
+                                                  <input 
+                                                    type="text" 
+                                                    value={item.remarks || ''} 
+                                                    onChange={(e) => updateItem(item.id, 'remarks', e.target.value)} 
+                                                    className="flex-1 w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px] italic outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" 
+                                                    placeholder="備註說明..." 
+                                                  />
                                                 ) : (
                                                   item.remarks && <span className="text-[10px] text-slate-400 italic truncate w-full flex-1">{item.remarks}</span>
                                                 )}
                                               </div>
                                             </div>
                                           </td>
-                                          <td className="px-3 py-2.5">
-                                            {isEditing ? <input type="text" value={item.unit ?? ''} onChange={(e) => updateItem(item.id, 'unit', e.target.value)} className="w-12 bg-white border border-slate-300 rounded px-1.5 py-1 outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="text-slate-600 font-medium">{item.unit}</span>}
+                                          <td className="px-3 py-3">
+                                            {isEditing ? (
+                                              <input 
+                                                type="text" 
+                                                value={item.unit ?? ''} 
+                                                onChange={(e) => updateItem(item.id, 'unit', e.target.value)} 
+                                                className="w-16 bg-white border border-slate-200 rounded-lg px-2 py-1.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" 
+                                              />
+                                            ) : (
+                                              <span className="text-slate-600 font-medium">{item.unit}</span>
+                                            )}
                                           </td>
-                                          <td className="px-3 py-2.5 text-right">
-                                            {isEditing ? <input type="number" value={item.price ?? 0} onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 text-right font-mono outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="font-mono text-slate-600">{(item.price).toLocaleString()}</span>}
+                                          <td className="px-3 py-3 text-right">
+                                            {isEditing ? (
+                                              <input 
+                                                type="number" 
+                                                value={item.price ?? 0} 
+                                                onChange={(e) => updateItem(item.id, 'price', Number(e.target.value))} 
+                                                className="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-right font-mono outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" 
+                                              />
+                                            ) : (
+                                              <span className="font-mono text-slate-600">{(item.price).toLocaleString()}</span>
+                                            )}
                                           </td>
-                                          <td className="px-3 py-2.5 text-right">
-                                            {isEditing ? <input type="number" step="0.1" value={item.quantity ?? 0} onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))} className="w-full bg-white border border-slate-300 rounded px-1.5 py-1 text-right font-mono outline-none focus:ring-1 focus:ring-blue-500 text-xs" /> : <span className="font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">{item.quantity}</span>}
+                                          <td className="px-3 py-3 text-right">
+                                            {isEditing ? (
+                                              <input 
+                                                type="number" 
+                                                step="0.1" 
+                                                value={item.quantity ?? 0} 
+                                                onChange={(e) => updateItem(item.id, 'quantity', Number(e.target.value))} 
+                                                className="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-right font-mono outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all" 
+                                              />
+                                            ) : (
+                                              <span className="font-mono font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded-lg">{item.quantity}</span>
+                                            )}
                                           </td>
-                                          <td className="px-4 py-2.5 text-right font-bold text-blue-600 font-mono text-[13px]">
+                                          <td className="px-4 py-3 text-right font-bold text-blue-600 font-mono text-[14px]">
                                             {(item.price * item.quantity).toLocaleString()}
                                           </td>
-                                          <td className="px-4 py-2.5 text-center">
-                                            <div className="flex items-center justify-center gap-1 transition-opacity">
+                                          <td className="px-4 py-3 text-center">
+                                            <div className="flex items-center justify-center gap-1">
                                               {isEditing ? (
                                                 <>
-                                                  <button onClick={() => setEditingItemId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1 rounded transition-colors shadow-sm" title="儲存"><Check size={12} /></button>
-                                                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
+                                                  <button onClick={() => setEditingItemId(null)} className="text-white bg-green-500 hover:bg-green-600 p-1.5 rounded-lg transition-all shadow-sm active:scale-95" title="儲存"><Check size={14} /></button>
+                                                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition-all active:scale-95" title="刪除"><Trash2 size={14} /></button>
                                                 </>
                                               ) : (
                                                 <>
-                                                  <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded transition-colors" title="編輯"><Edit2 size={14} /></button>
-                                                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-1 rounded transition-colors" title="刪除"><Trash2 size={12} /></button>
+                                                  <button onClick={() => setEditingItemId(item.id)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-all active:scale-95" title="編輯"><Edit2 size={16} /></button>
+                                                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-all active:scale-95" title="刪除"><Trash2 size={16} /></button>
                                                 </>
                                               )}
                                             </div>
@@ -1778,6 +2128,19 @@ export default function App() {
                               </React.Fragment>
                             );
                           })}
+                          {/* Section Total Row */}
+                          {activeSpace.items.filter(i => ['labor', 'waste'].includes(i.category)).length > 0 && (
+                            <tr className="bg-slate-50/50 font-bold">
+                              <td colSpan={4} className="px-4 py-4 text-right text-slate-500 uppercase tracking-wider">其他費用小計</td>
+                              <td className="px-4 py-4 text-right text-blue-700 font-mono text-base border-t-2 border-blue-100">
+                                {activeSpace.items
+                                  .filter(i => ['labor', 'waste'].includes(i.category))
+                                  .reduce((sum, item) => sum + (item.price * item.quantity), 0)
+                                  .toLocaleString()}
+                              </td>
+                              <td></td>
+                            </tr>
+                          )}
                           {activeSpace.items.filter(i => ['labor', 'waste'].includes(i.category)).length === 0 && (
                             <tr><td colSpan={6} className="py-8 text-center text-slate-400"><p>尚無任何工程費用項目，請從上方「從資料庫加入項目」提取</p></td></tr>
                           )}
@@ -2015,16 +2378,16 @@ export default function App() {
           )}
 
           {viewMode === 'database' && (
-            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight">建材資料庫管理</h2>
-                  <p className="text-sm text-slate-500 mt-1">管理各類建材、設備的標準價格與規格</p>
+                  <h2 className="text-xl font-bold text-slate-900 tracking-tight">建材資料庫管理</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">管理各類建材、設備的標準價格與規格</p>
                 </div>
-                <button onClick={() => setIsAddCategoryModalOpen(true)} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors shadow-sm"><Plus size={16} /> 新增自訂類別</button>
+                <button onClick={() => setIsAddCategoryModalOpen(true)} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-3 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors shadow-sm"><Plus size={14} /> 新增自訂類別</button>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {Object.entries(categories).map(([cat, label]) => {
                   const isExpanded = expandedCategories[cat] ?? false;
                   const items = databaseItems.filter(i => i.category === cat).sort((a, b) => {
@@ -2037,34 +2400,34 @@ export default function App() {
                   });
                   
                   return (
-                    <div key={cat} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                      <div className="flex items-center justify-between px-6 py-4 bg-slate-50/80 cursor-pointer group hover:bg-slate-100 transition-colors" onClick={() => toggleCategory(cat)}>
-                        <div className="flex items-center gap-3">
-                          <div className={`p-1 rounded-md transition-colors ${isExpanded ? 'bg-blue-100 text-blue-600' : 'bg-slate-200 text-slate-500 group-hover:bg-blue-100 group-hover:text-blue-600'}`}>{isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}</div>
-                          <h3 className="font-bold text-slate-800 text-lg flex items-center">
+                    <div key={cat} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                      <div className="flex items-center justify-between px-4 py-2.5 bg-slate-50/80 cursor-pointer group hover:bg-slate-100 transition-colors" onClick={() => toggleCategory(cat)}>
+                        <div className="flex items-center gap-2.5">
+                          <div className={`p-1 rounded-md transition-colors ${isExpanded ? 'bg-blue-100 text-blue-600' : 'bg-slate-200 text-slate-500 group-hover:bg-blue-100 group-hover:text-blue-600'}`}>{isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}</div>
+                          <h3 className="font-bold text-slate-800 text-base flex items-center">
                             {label}
-                            <span className="text-sm text-slate-400 font-normal ml-3 bg-white px-2 py-0.5 rounded-full border border-slate-200">{items.length} 項</span>
-                            {cat.startsWith('custom_') && <button onClick={(e) => { e.stopPropagation(); setCategoryToDelete({ id: cat, label }); }} className="ml-3 text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-md transition-all" title="刪除自訂類別"><Trash2 size={16} /></button>}
+                            <span className="text-[11px] text-slate-400 font-normal ml-2 bg-white px-2 py-0.5 rounded-full border border-slate-200">{items.length} 項</span>
+                            {cat.startsWith('custom_') && <button onClick={(e) => { e.stopPropagation(); setCategoryToDelete({ id: cat, label }); }} className="ml-2 text-red-400 hover:text-red-600 hover:bg-red-50 p-1 rounded-md transition-all" title="刪除自訂類別"><Trash2 size={14} /></button>}
                           </h3>
                         </div>
-                        <button onClick={(e) => { e.stopPropagation(); addDatabaseItem(cat as any); }} className="text-sm font-bold flex items-center gap-1.5 text-blue-600 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm hover:bg-blue-50 transition-colors"><Plus size={14} /> 新增項目</button>
+                        <button onClick={(e) => { e.stopPropagation(); addDatabaseItem(cat as any); }} className="text-xs font-bold flex items-center gap-1 text-blue-600 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-sm hover:bg-blue-50 transition-colors"><Plus size={12} /> 新增項目</button>
                       </div>
                       
                       <AnimatePresence>
                         {isExpanded && (
                           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="border-t border-slate-200">
                             <div className="overflow-x-auto pb-2">
-                              <table className="w-full text-left border-collapse text-xs whitespace-nowrap">
+                              <table className="w-full text-left border-collapse text-[11px] whitespace-nowrap">
                                 <thead>
                                   <tr className="bg-white border-b border-slate-100 text-slate-500">
-                                    <th className="px-4 py-2 font-semibold cursor-pointer hover:text-slate-800 min-w-[180px] w-[25%]" onClick={() => { setSortBy('name'); setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); }}>項目名稱 ⇅</th>
-                                    <th className="px-3 py-2 font-semibold w-16 min-w-[64px]">單位</th>
-                                    <th className="px-3 py-2 font-semibold w-20 min-w-[80px]">預設數量</th>
-                                    <th className="px-3 py-2 font-semibold cursor-pointer hover:text-slate-800 w-24 min-w-[100px]" onClick={() => { setSortBy('price'); setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); }}>單價 ⇅</th>
-                                    <th className="px-3 py-2 font-semibold w-24 min-w-[100px]">品牌</th>
-                                    <th className="px-3 py-2 font-semibold w-24 min-w-[100px]">規格</th>
-                                    <th className="px-3 py-2 font-semibold min-w-[120px]">備註</th>
-                                    <th className="px-4 py-2 font-semibold text-center w-16 min-w-[80px]">操作</th>
+                                    <th className="px-3 py-1.5 font-semibold cursor-pointer hover:text-slate-800 min-w-[150px] w-[25%]" onClick={() => { setSortBy('name'); setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); }}>項目名稱 ⇅</th>
+                                    <th className="px-2 py-1.5 font-semibold w-12 min-w-[48px]">單位</th>
+                                    <th className="px-2 py-1.5 font-semibold w-16 min-w-[64px]">預設數量</th>
+                                    <th className="px-2 py-1.5 font-semibold cursor-pointer hover:text-slate-800 w-20 min-w-[80px]" onClick={() => { setSortBy('price'); setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); }}>單價 ⇅</th>
+                                    <th className="px-2 py-1.5 font-semibold w-20 min-w-[80px]">品牌</th>
+                                    <th className="px-2 py-1.5 font-semibold w-20 min-w-[80px]">規格</th>
+                                    <th className="px-2 py-1.5 font-semibold min-w-[100px]">備註</th>
+                                    <th className="px-3 py-1.5 font-semibold text-center w-14 min-w-[70px]">操作</th>
                                   </tr>
                                 </thead>
                                   <Reorder.Group axis="y" values={items} onReorder={(newItems) => reorderDatabaseItems(newItems, cat)} as="tbody" className="divide-y divide-slate-100">
@@ -2072,37 +2435,37 @@ export default function App() {
                                       const isEditing = editingDbId === item.id;
                                       return (
                                         <Reorder.Item key={item.id} value={item} as="tr" className={`transition-colors cursor-default ${isEditing ? 'bg-blue-50/30' : 'hover:bg-slate-50'}`}>
-                                          <td className="px-4 py-2">
-                                            <div className="flex items-center gap-2">
-                                              <div className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-blue-500 transition-colors" title="拖曳排序"><GripVertical size={14} /></div>
+                                          <td className="px-3 py-1">
+                                            <div className="flex items-center gap-1.5">
+                                              <div className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-blue-500 transition-colors" title="拖曳排序"><GripVertical size={12} /></div>
                                               {isEditing ? (
-                                                <div className="flex items-center gap-2">
-                                                  <input type="text" value={item.name} onChange={(e) => updateDatabaseItem(item.id, 'name', e.target.value)} className="w-full bg-white border border-slate-300 px-1.5 py-1 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-800 font-semibold" />
+                                                <div className="flex items-center gap-1.5">
+                                                  <input type="text" value={item.name} onChange={(e) => updateDatabaseItem(item.id, 'name', e.target.value)} className="w-full bg-white border border-slate-300 px-1 py-0.5 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-800 font-semibold" />
                                                   {item.category === 'tile' && (
-                                                    <select value={item.tileType || 'floor'} onChange={(e) => updateDatabaseItem(item.id, 'tileType', e.target.value as 'floor' | 'wall')} className="w-16 shrink-0 bg-white border border-slate-300 rounded px-1 py-1 text-[11px] text-teal-700 font-bold outline-none focus:ring-1 focus:ring-blue-500">
+                                                    <select value={item.tileType || 'floor'} onChange={(e) => updateDatabaseItem(item.id, 'tileType', e.target.value as 'floor' | 'wall')} className="w-14 shrink-0 bg-white border border-slate-300 rounded px-1 py-0.5 text-[10px] text-teal-700 font-bold outline-none focus:ring-1 focus:ring-blue-500">
                                                       <option value="floor">地磚</option>
                                                       <option value="wall">壁磚</option>
                                                     </select>
                                                   )}
                                                 </div>
                                               ) : (
-                                                <div className="flex items-center gap-2">
-                                                  <span className="font-semibold text-slate-800 truncate block max-w-[120px] sm:max-w-[200px]">{item.name}</span>
-                                                  {item.category === 'tile' && item.tileType && <span className={`text-[10px] shrink-0 px-1.5 py-0.5 rounded font-medium border ${item.tileType === 'wall' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-teal-50 text-teal-700 border-teal-100'}`}>{item.tileType === 'wall' ? '壁磚' : '地磚'}</span>}
+                                                <div className="flex items-center gap-1.5">
+                                                  <span className="font-semibold text-slate-800 truncate block max-w-[120px] sm:max-w-[180px]">{item.name}</span>
+                                                  {item.category === 'tile' && item.tileType && <span className={`text-[9px] shrink-0 px-1 py-0.5 rounded font-medium border ${item.tileType === 'wall' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-teal-50 text-teal-700 border-teal-100'}`}>{item.tileType === 'wall' ? '壁磚' : '地磚'}</span>}
                                                 </div>
                                               )}
                                             </div>
                                           </td>
-                                          <td className="px-3 py-2">{isEditing ? <input type="text" value={item.unit} onChange={(e) => updateDatabaseItem(item.id, 'unit', e.target.value)} className="w-10 bg-white border border-slate-300 px-1.5 py-1 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-700" /> : <span className="text-slate-600">{item.unit}</span>}</td>
-                                          <td className="px-3 py-2">{isEditing ? <input type="number" value={item.quantity} onChange={(e) => updateDatabaseItem(item.id, 'quantity', Number(e.target.value))} className="w-14 bg-white border border-slate-300 px-1.5 py-1 rounded focus:ring-1 focus:ring-blue-500 outline-none font-mono text-slate-700" /> : <span className="text-slate-600 font-mono">{item.quantity}</span>}</td>
-                                          <td className="px-3 py-2">{isEditing ? <input type="number" value={item.price} onChange={(e) => updateDatabaseItem(item.id, 'price', Number(e.target.value))} className="w-20 bg-white border border-slate-300 px-1.5 py-1 rounded focus:ring-1 focus:ring-blue-500 outline-none font-mono text-slate-700" /> : <span className="text-slate-800 font-mono font-medium text-[13px]">NT$ {item.price.toLocaleString()}</span>}</td>
-                                          <td className="px-3 py-2">{isEditing ? <input type="text" value={item.brand || ''} onChange={(e) => updateDatabaseItem(item.id, 'brand', e.target.value)} className="w-full bg-white border border-slate-300 px-1.5 py-1 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-700" placeholder="品牌..." /> : <span className="text-slate-500 truncate block max-w-[80px] sm:max-w-[120px]">{item.brand || '-'}</span>}</td>
-                                          <td className="px-3 py-2">{isEditing ? <input type="text" value={item.size || ''} onChange={(e) => updateDatabaseItem(item.id, 'size', e.target.value)} className="w-full bg-white border border-slate-300 px-1.5 py-1 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-700" placeholder="規格..." /> : <span className="text-slate-500 truncate block max-w-[80px] sm:max-w-[120px]">{item.size || '-'}</span>}</td>
-                                          <td className="px-3 py-2">{isEditing ? <input type="text" value={item.remarks || ''} onChange={(e) => updateDatabaseItem(item.id, 'remarks', e.target.value)} className="w-full bg-white border border-slate-300 px-1.5 py-1 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-800" placeholder="備註..." /> : <span className="text-slate-400 italic text-[11px] truncate block max-w-[100px] sm:max-w-[150px]">{item.remarks || '-'}</span>}</td>
-                                          <td className="px-4 py-2 text-center">
-                                            <div className="flex items-center justify-center gap-1">
-                                              <button onClick={() => isEditing ? setEditingDbId(null) : setEditingDbId(item.id)} className={`p-1.5 rounded-md transition-colors ${isEditing ? 'text-green-600 bg-green-50' : 'text-slate-400 hover:text-blue-600 hover:bg-blue-50'}`}>{isEditing ? <Check size={14} /> : <Edit2 size={14} />}</button>
-                                              <button onClick={() => removeDatabaseItem(item.id)} className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-md transition-colors"><Trash2 size={14} /></button>
+                                          <td className="px-2 py-1">{isEditing ? <input type="text" value={item.unit} onChange={(e) => updateDatabaseItem(item.id, 'unit', e.target.value)} className="w-8 bg-white border border-slate-300 px-1 py-0.5 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-700" /> : <span className="text-slate-600">{item.unit}</span>}</td>
+                                          <td className="px-2 py-1">{isEditing ? <input type="number" value={item.quantity} onChange={(e) => updateDatabaseItem(item.id, 'quantity', Number(e.target.value))} className="w-12 bg-white border border-slate-300 px-1 py-0.5 rounded focus:ring-1 focus:ring-blue-500 outline-none font-mono text-slate-700" /> : <span className="text-slate-600 font-mono">{item.quantity}</span>}</td>
+                                          <td className="px-2 py-1">{isEditing ? <input type="number" value={item.price} onChange={(e) => updateDatabaseItem(item.id, 'price', Number(e.target.value))} className="w-16 bg-white border border-slate-300 px-1 py-0.5 rounded focus:ring-1 focus:ring-blue-500 outline-none font-mono text-slate-700" /> : <span className="text-slate-800 font-mono font-medium text-[12px]">NT$ {item.price.toLocaleString()}</span>}</td>
+                                          <td className="px-2 py-1">{isEditing ? <input type="text" value={item.brand || ''} onChange={(e) => updateDatabaseItem(item.id, 'brand', e.target.value)} className="w-full bg-white border border-slate-300 px-1 py-0.5 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-700" placeholder="品牌..." /> : <span className="text-slate-500 truncate block max-w-[70px] sm:max-w-[100px]">{item.brand || '-'}</span>}</td>
+                                          <td className="px-2 py-1">{isEditing ? <input type="text" value={item.size || ''} onChange={(e) => updateDatabaseItem(item.id, 'size', e.target.value)} className="w-full bg-white border border-slate-300 px-1 py-0.5 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-700" placeholder="規格..." /> : <span className="text-slate-500 truncate block max-w-[70px] sm:max-w-[100px]">{item.size || '-'}</span>}</td>
+                                          <td className="px-2 py-1">{isEditing ? <input type="text" value={item.remarks || ''} onChange={(e) => updateDatabaseItem(item.id, 'remarks', e.target.value)} className="w-full bg-white border border-slate-300 px-1 py-0.5 rounded focus:ring-1 focus:ring-blue-500 outline-none text-slate-800" placeholder="備註..." /> : <span className="text-slate-400 italic text-[10px] truncate block max-w-[90px] sm:max-w-[130px]">{item.remarks || '-'}</span>}</td>
+                                          <td className="px-3 py-1 text-center">
+                                            <div className="flex items-center justify-center gap-0.5">
+                                              <button onClick={() => isEditing ? setEditingDbId(null) : setEditingDbId(item.id)} className={`p-1 rounded-md transition-colors ${isEditing ? 'text-green-600 bg-green-50' : 'text-slate-400 hover:text-blue-600 hover:bg-blue-50'}`}>{isEditing ? <Check size={12} /> : <Edit2 size={12} />}</button>
+                                              <button onClick={() => removeDatabaseItem(item.id)} className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-md transition-colors"><Trash2 size={12} /></button>
                                             </div>
                                           </td>
                                         </Reorder.Item>
@@ -2129,18 +2492,18 @@ export default function App() {
                     <h2 className="text-2xl font-bold text-slate-900 tracking-tight">總結報告</h2>
                     <p className="text-sm text-slate-500 mt-1">全案估算總結與報價細項</p>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-                      <button onClick={() => setSummaryViewMode('category')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${summaryViewMode === 'category' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}>大項目總計</button>
-                      <button onClick={() => setSummaryViewMode('detail')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${summaryViewMode === 'detail' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}>各空間細項</button>
+                    <div className="flex items-center gap-3">
+                      <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                        <button onClick={() => setSummaryViewMode('category')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${summaryViewMode === 'category' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}>大項目總計</button>
+                        <button onClick={() => setSummaryViewMode('detail')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${summaryViewMode === 'detail' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}>各空間細項</button>
+                      </div>
+                      <button 
+                        onClick={handleExportPDF}
+                        className="flex items-center gap-2 bg-slate-800 text-white hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors"
+                      >
+                        <Printer size={16} /> 匯出報價單 (PDF)
+                      </button>
                     </div>
-                    <button 
-                      onClick={handleExportPDF}
-                      className="flex items-center gap-2 bg-slate-800 text-white hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors"
-                    >
-                      <Printer size={16} /> 匯出報價單
-                    </button>
-                  </div>
                 </div>
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-end">
                   <div className="w-full">
@@ -2448,38 +2811,60 @@ export default function App() {
         {showDatabaseModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 lg:p-8">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowDatabaseModal(false)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
-            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative bg-slate-50 w-full max-w-5xl h-[85vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-slate-200/50">
-              <div className="px-8 py-5 border-b border-slate-200 flex items-center justify-between bg-white sticky top-0 z-10">
-                <div className="flex items-center gap-4">
-                  <div className="bg-blue-100 p-2.5 rounded-xl text-blue-600"><Database size={24} /></div>
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative bg-slate-50 w-full max-w-5xl h-[90vh] sm:h-[85vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-slate-200/50">
+              <div className="px-4 py-3 sm:px-6 sm:py-3 border-b border-slate-200 flex items-center justify-between bg-white sticky top-0 z-10">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="bg-blue-100 p-2 rounded-xl text-blue-600"><Database size={20} /></div>
                   <div>
-                    <h2 className="text-xl font-bold text-slate-800">從資料庫加入標準項目</h2>
-                    <p className="text-sm text-slate-500 font-medium mt-1">選擇要加入至 <span className="font-bold text-blue-600 px-1">{activeSpace.name}</span> 的建材與設備</p>
+                    <h2 className="text-base sm:text-lg font-bold text-slate-800">從資料庫加入項目</h2>
+                    <p className="text-[10px] sm:text-xs text-slate-500 font-medium mt-0.5">選擇要加入至 <span className="font-bold text-blue-600">{activeSpace.name}</span> 的項目</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="relative">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="relative hidden sm:block">
                     <input 
                       type="text" 
                       value={dbSearchTerm} 
                       onChange={(e) => setDbSearchTerm(e.target.value)} 
                       placeholder="搜尋建材名稱..." 
-                      className="w-64 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-shadow pl-10"
+                      className="w-48 sm:w-64 bg-slate-50 border border-slate-200 rounded-xl px-4 py-1.5 text-xs outline-none focus:ring-2 focus:ring-blue-500 transition-shadow pl-9"
                     />
                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                      <Database size={16} />
+                      <Database size={14} />
                     </div>
                     {dbSearchTerm && (
                       <button onClick={() => setDbSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                        <X size={14} />
+                        <X size={12} />
                       </button>
                     )}
                   </div>
                   <button onClick={() => setShowDatabaseModal(false)} className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-700"><X size={24} /></button>
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto p-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              
+              {/* Mobile Search Bar */}
+              <div className="p-3 bg-white border-b border-slate-100 sm:hidden">
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    value={dbSearchTerm} 
+                    onChange={(e) => setDbSearchTerm(e.target.value)} 
+                    placeholder="搜尋建材名稱..." 
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-shadow pl-10"
+                  />
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <Database size={16} />
+                  </div>
+                  {dbSearchTerm && (
+                    <button onClick={() => setDbSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                      <X size={16} />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-3 sm:p-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                   {Object.entries(categories).map(([cat, label]) => {
                     const isExpanded = expandedCategories[cat] ?? false;
                     const items = databaseItems.filter(i => 
@@ -2488,31 +2873,65 @@ export default function App() {
                     );
                     if (items.length === 0) return null;
                     return (
-                      <div key={cat} className="space-y-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm self-start">
-                        <div className="flex items-center justify-between border-b border-slate-100 pb-3 cursor-pointer group" onClick={() => toggleCategory(cat)}>
-                          <h3 className="font-bold text-slate-800 flex items-center gap-2 text-lg"><div className="w-1.5 h-6 rounded-full bg-blue-500" />{label}<span className="text-xs text-slate-500 font-normal ml-2 bg-slate-100 px-2 py-0.5 rounded-full">{items.length} 筆</span></h3>
-                          <div className="text-slate-400 group-hover:text-blue-500 transition-colors bg-slate-50 p-1.5 rounded-md">{isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}</div>
+                      <div key={cat} className="space-y-2.5 bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-sm self-start">
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-2 group">
+                          <div className="flex items-center gap-2 cursor-pointer py-1" onClick={() => toggleCategory(cat)}>
+                            <h3 className="font-bold text-slate-800 flex items-center gap-2 text-sm sm:text-base"><div className="w-1 h-5 rounded-full bg-blue-500" />{label}<span className="text-[10px] text-slate-500 font-normal ml-1.5 bg-slate-100 px-1.5 py-0.5 rounded-full">{items.length}</span></h3>
+                            <div className="text-slate-400 group-hover:text-blue-500 transition-colors bg-slate-50 p-0.5 rounded-md">{isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}</div>
+                          </div>
+                          {isExpanded && (
+                            <button 
+                              onClick={() => {
+                                const allItemIds = items.map(i => i.id);
+                                const allSelected = allItemIds.every(id => selectedDbItems.includes(id));
+                                if (allSelected) {
+                                  setSelectedDbItems(prev => prev.filter(id => !allItemIds.includes(id)));
+                                } else {
+                                  setSelectedDbItems(prev => [...new Set([...prev, ...allItemIds])]);
+                                }
+                              }}
+                              className="text-[10px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 px-2 py-1 rounded transition-colors"
+                            >
+                              {items.map(i => i.id).every(id => selectedDbItems.includes(id)) ? '取消全選' : '全選'}
+                            </button>
+                          )}
                         </div>
                         <AnimatePresence>
                           {isExpanded && (
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                              <div className="grid grid-cols-1 gap-2 pt-2">
-                                {items.map((item) => (
-                                  <button key={item.id} onClick={() => addFromDatabase(item)} className="flex justify-between items-center p-3.5 bg-slate-50 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 hover:shadow-md transition-all text-left group">
-                                    <div>
-                                      <p className="font-bold text-slate-700 group-hover:text-blue-700 transition-colors mb-1">{item.name}</p>
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-[11px] text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">單位: {item.unit}</span>
-                                        {item.brand && <span className="text-[11px] text-slate-500 px-1 border-l border-slate-300">{item.brand}</span>}
-                                        {item.size && <span className="text-[11px] text-slate-500 px-1 border-l border-slate-300">{item.size}</span>}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1.5">
+                                {items.map((item) => {
+                                  const isSelected = selectedDbItems.includes(item.id);
+                                  return (
+                                      <div 
+                                        key={item.id} 
+                                        onClick={() => {
+                                          setSelectedDbItems(prev => 
+                                            prev.includes(item.id) 
+                                              ? prev.filter(id => id !== item.id) 
+                                              : [...prev, item.id]
+                                          );
+                                        }}
+                                        className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer group active:scale-[0.98] touch-manipulation ${isSelected ? 'bg-blue-50 border-blue-500 shadow-sm ring-1 ring-blue-500/20' : 'bg-white border-slate-200 hover:border-blue-300 hover:bg-slate-50'}`}
+                                      >
+                                        <div className="flex items-center justify-center">
+                                          <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-blue-600 border-blue-600 text-white scale-110 shadow-sm' : 'bg-white border-slate-300 group-hover:border-blue-400'}`}>
+                                            {isSelected && <Check size={14} strokeWidth={4} />}
+                                          </div>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                          <p className={`font-bold text-sm transition-colors mb-0.5 truncate ${isSelected ? 'text-blue-700' : 'text-slate-700 group-hover:text-blue-600'}`}>{item.name}</p>
+                                          <div className="flex items-center gap-2">
+                                            <span className={`text-[10px] px-1.5 py-0.5 rounded-md border transition-colors font-medium ${isSelected ? 'bg-white text-blue-600 border-blue-200' : 'text-slate-500 bg-slate-50 border-slate-200'}`}>{item.unit}</span>
+                                            {item.brand && <span className="text-[10px] text-slate-400 truncate max-w-[100px] border-l border-slate-200 pl-2">{item.brand}</span>}
+                                          </div>
+                                        </div>
+                                        <div className="text-right shrink-0">
+                                          <p className={`font-mono font-bold text-sm transition-colors ${isSelected ? 'text-blue-800' : 'text-slate-800'}`}>${item.price.toLocaleString()}</p>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div className="text-right">
-                                      <p className="font-bold text-slate-800 text-base">NT$ {item.price.toLocaleString()}</p>
-                                      <p className="text-[10px] text-blue-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity mt-1 flex items-center gap-1 justify-end"><Plus size={12} /> 加入清單</p>
-                                    </div>
-                                  </button>
-                                ))}
+                                  );
+                                })}
                               </div>
                             </motion.div>
                           )}
@@ -2522,9 +2941,42 @@ export default function App() {
                   })}
                 </div>
               </div>
-              <div className="p-6 border-t border-slate-200 bg-white flex justify-between items-center z-10">
-                <p className="text-xs text-slate-500 hidden sm:block">點擊任一項目即可將其加入當前空間估算中</p>
-                <button onClick={() => setShowDatabaseModal(false)} className="px-8 py-2.5 rounded-lg font-bold text-sm bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800 transition-colors w-full sm:w-auto">完成並關閉</button>
+              <div className="p-4 border-t border-slate-200 bg-white flex flex-col sm:flex-row justify-between items-center gap-3 z-10">
+                <div className="flex items-center justify-between w-full sm:w-auto gap-3">
+                  <p className="text-xs font-medium text-slate-600">已選取 <span className="text-blue-600 font-bold text-base">{selectedDbItems.length}</span> 個項目</p>
+                  {selectedDbItems.length > 0 && (
+                    <button onClick={() => setSelectedDbItems([])} className="text-[11px] text-red-500 hover:text-red-600 font-bold underline underline-offset-2">清除全部</button>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button onClick={() => { setShowDatabaseModal(false); setSelectedDbItems([]); }} className="flex-1 sm:flex-none px-4 py-3 sm:py-2 rounded-xl font-bold text-sm sm:text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">取消</button>
+                  <button 
+                    onClick={addMultipleFromDatabase} 
+                    disabled={selectedDbItems.length === 0}
+                    className={`flex-1 sm:flex-none px-6 py-3 sm:py-2 rounded-xl font-bold text-sm sm:text-xs transition-all flex items-center justify-center gap-2 ${selectedDbItems.length > 0 ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
+                  >
+                    <Plus size={18} className="sm:w-4 sm:h-4" /> 匯入項目 ({selectedDbItems.length})
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showLogoutConfirm && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowLogoutConfirm(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="relative bg-white w-full max-w-sm rounded-3xl shadow-2xl p-8 flex flex-col border border-slate-200 z-10 text-center">
+              <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-500 mx-auto mb-6">
+                <LogOut size={40} />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">確定要登出系統嗎？</h3>
+              <p className="text-slate-500 mb-8">登出後將返回登入頁面，您需要重新輸入帳號密碼才能進入。</p>
+              <div className="grid grid-cols-2 gap-4">
+                <button onClick={() => setShowLogoutConfirm(false)} className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-colors">取消</button>
+                <button onClick={handleLogout} className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl transition-colors shadow-lg shadow-red-200">確定登出</button>
               </div>
             </motion.div>
           </div>
